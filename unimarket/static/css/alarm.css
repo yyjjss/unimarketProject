@@ -1,0 +1,96 @@
+@charset "utf-8";
+.container {
+  padding-top: 64px;
+}
+
+main {
+  width: 70%;
+  margin: 0 auto;
+}
+
+article {
+  margin: 10px auto;
+}
+
+.alarm-title {
+  position: relative;
+}
+
+.alarm-title > .alarm-backpage {
+  font-size: 36px;
+  position: absolute;
+  left: 0;
+  top: 10%;
+  background: none;
+  border: none;
+}
+
+h1 {
+  text-align: center;
+}
+
+section {
+  margin: 12px 8px;
+}
+
+section .alarm-list {
+  width: 100%;
+  position: relative;
+}
+
+section .alarm-list > a {
+  display: flex;
+  justify-content: left;
+}
+
+section .alarm-list .alarm-image-box {
+  width: 180px;
+  height: 160px;
+  margin: 0 10px;
+}
+
+section .alarm-list .alarm-image-box .alarm-img {
+  display: flex;
+  justify-content: center;
+}
+
+section .alarm-list img {
+  width: 160px;
+  height: 160px;
+}
+
+.alarm-list > div.alarm-icon {
+  position: absolute;
+  bottom: 21px;
+  right: 10px;
+}
+
+.alarm-end > button {
+  cursor: not-allowed;
+}
+
+
+.pageFont {
+  font-family: 'strato-roman';
+  font-size: 1vw;
+  text-align: center;
+  font-weight: normal;
+  line-height: 1;
+  letter-spacing: 0.2rem;
+}
+
+.left-button {
+  width: 50px;
+  height: 50px;
+  align-self: flex-end;
+  opacity: 0.6;
+  border: none;
+}
+
+.right-button {
+  width: 50px;
+  height: 50px;
+  align-self: flex-end;
+  opacity: 0.6;
+  border: none;
+}

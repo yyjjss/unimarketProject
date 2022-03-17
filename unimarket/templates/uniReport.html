@@ -1,0 +1,62 @@
+{% extends 'uniBase.html' %} {% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- style css -->
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/report.css' %}" />
+    {% endblock %}
+    <!-- Java script -->
+    {% block script %}
+    <script src="{% static 'js/recentreview.js' %}"></script>
+    {% endblock %}
+    <title>{% block title %}Uni Report{% endblock %}</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header>{% block header %} {% endblock %}</header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <main>
+      <br/><br/>
+        <h1>신고하기</h1>
+        <h3>고객님, 어떤 이유로 신고하려 하시나요 ?</h3>
+        <br />
+			<form name="reportForm">
+			{% csrf_token  %}
+				<input id="reportTo" name="reportTo" type="hidden">
+				<input id="reportFrom" name="reportFrom" type="hidden">
+				<input id="itemNo" name="itemNo" type="hidden">
+				<div class="report-text">
+					<textarea id="reportContent" name="reportContent" placeholder=" 50자 이상 작성해주세요." maxlength="2000"></textarea>
+				</div>
+				<div class="review-select">
+					<input class="btn-submit" type="button" value="전송" onclick="reportContentCk()"/> 
+					<input class="btn btn-default btn-reportClose" type="button" value="닫기" />
+				</div>
+			</form>
+		</main>
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer>{% block footer %} {% endblock %}</footer>
+    <!-----------------end---------------------------->
+
+    <!-- Bootstrap JS -->
+    {% block script2 %}
+    <script>
+    $(document).ready(function(){
+    	document.getElementById("reportTo").value = opener.document.getElementById("sellMemNo").value;
+    	document.getElementById("reportFrom").value = opener.document.getElementById("buyMemNo").value;
+    	document.getElementById("itemNo").value = opener.document.getElementById("itemNo").value;
+    });
+    </script>
+    {% endblock %}
+  </body>
+</html>

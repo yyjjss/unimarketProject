@@ -1,0 +1,112 @@
+{% extends 'uniBase.html' %} 
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- style css -->
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/chat.css' %}" />
+    {% endblock %}
+    <!-- Java script -->
+    {% block script %}
+    <script src="{% static 'js/chat.js' %}"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a128bd5021ad380e0a0cdf333f7b1a97&libraries=services"></script>
+    {% endblock %}
+    <title>{% block title %}Uni Chat{% endblock %}</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header>
+    </header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+        <form>
+        <div class="chat-box">
+          <aside>
+            <div class="chat-search-home">
+              <div class="chat-search">
+                <input type="text" placeholder="search" />
+                <button type="button">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+            <ul>
+	            {% for chatList in dtoChatList %}
+	              <li>
+	                <img src="{{chatList.itemImg.url}}" alt="채팅 상품 이미지" />
+	                <div>
+	                  <h5>{{chatList.title|truncatewords:7}}</h5>
+	                  <h6>{{otherList.nickname}} / {{memList.nickname}}</h6>
+	                </div>
+	              </li>
+	            {% endfor %}
+            </ul>
+          </aside>
+          <main>
+          	<a href="uniDetail?itemNo={{chatItem.itemNo}}">
+          	<div class="chat-header">
+              <img src="{{chatItem.itemImg.url}}" alt="상품이미지" />
+              <div>
+                <h4>{{chatItem.title}}</h4>
+                <h5>{{chatItem.info|truncatewords:10}}</h5>
+              </div>
+            </div>
+            </a>
+            <ul class="chat">
+            {% for chat in dtoChat%}
+            	{% if chat.fromSender == memNo %}
+						<li class="me">
+							<div class="entente">
+								<div class="me-img">
+									<img src="{{memList.proImg.url}}" alt="본인이미지" />
+								</div>
+								<h6>{{memList.nickname}}</h6>
+
+								<div class="message">
+								{{chat.chatContent}}
+								</div>
+							</div>
+						</li> 
+				{% else %}
+						<li class="you">
+							<div class="your-img">
+								<img src="{{otherList.proImg.url}}" alt="상대방이미지" />
+							</div>
+							<div class="entente">
+								<h6>{{otherList.nickname}}</h6>
+								<div class="message">
+								{{chat.chatContent}}
+								</div>
+							</div>
+						</li> 
+				{% endif %}
+            {% endfor %}
+              
+              
+            </ul>
+            <div class="chat-foot">
+            	<input id="chatNo" name="chatNo" type="hidden" value="{{chatNo}}">
+            	<input id="memNo" name="memNo" type="hidden" value="{{memNo}}">
+              	<textarea id="chat-message-input" class="sendContent" placeholder="Type your message"></textarea>
+              	<button type="button" class="kakaoMap"><i class="fas fa-map"></i></button>
+              	<input type="button" id="chat-message-submit" class="chatSend" value="send">
+            </div>
+          </main>
+        </div>
+      </form>
+      
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer>
+     </footer>
+    <!-----------------end---------------------------->
+  </body>
+</html>

@@ -1,0 +1,93 @@
+@charset "utf-8";
+
+.container {
+  padding-top: 64px;
+}
+
+.header {
+  display: flex;
+
+  margin: 50px auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.header .menu {
+  width: 150px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.header .menu > button {
+	background: none;
+	border: none;
+}
+
+.header > .menu > .notice-page{
+  border-bottom: 3px solid black;
+}
+
+/* ----- main ----- */
+
+main {
+  margin-bottom: 20px;
+}
+
+/* ----- section ----- */
+
+section {
+  width: 800px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+section > .page-reader {
+  width: calc(50% - 12px);
+  margin: 12px 6px;
+}
+
+section > .page-reader > .image {
+  padding: 12px 0;
+  border: 1px solid rgb(216, 216, 216);
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+}
+
+section > .page-reader > .image > img {
+  width: 224px;
+  height: 229px;
+}
+
+section > .page-reader > .summary {
+  font-size: 1.5rem;
+  color: rgb(102, 102, 102);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+section > .page-reader > .info {
+  font-size: 1.3rem;
+  font-weight: bolder;
+  color: #6667ab;
+}
+
+/* ----------------------------media width 769 이하일떄 ----------------------------- */
+@media (max-width: 769px){
+	section {
+    	width: 100%;
+   		justify-content: center;
+	}
+	section > .page-reader {
+	    width: 100%;
+	    margin: 12px 6px;
+	}
+	section > .page-reader > .image > img {
+	    width: 60vw;
+	    height: 50vw;
+	}
+}

@@ -1,0 +1,48 @@
+@charset "utf-8";
+.container {
+  padding-top: 64px;
+}
+
+main {
+  width: 50%;
+  padding-top: 100px;
+  margin: 100px auto;
+  border: 1px solid #eee;
+  position: relative;
+}
+
+article {
+  width: 450px;
+  height: 400px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+main form {
+  height: 30vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+input[type="password"],
+input[type="password"]:focus {
+  width: 300px;
+  outline: 1px solid #70558e;
+  border-radius: 2px;
+}
+
+main input[type="submit"],
+main input[type="button"] {
+  width: 100px;
+  height: 30px;
+  border: none;
+  border-radius: 5px;
+}
+
+main input[type="submit"] {
+  background: #6667ab;
+}

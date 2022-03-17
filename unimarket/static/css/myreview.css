@@ -1,0 +1,66 @@
+@charset "utf-8";
+.container {
+  padding-top: 64px;
+}
+
+main {
+  width: 70%;
+  margin: 0 auto;
+}
+
+article {
+  margin: 10px auto;
+}
+
+.review-title {
+  position: relative;
+}
+
+.review-title > .review-backpage {
+  font-size: 36px;
+  position: absolute;
+  left: 0;
+  top: 10%;
+  background: none;
+  border: none;
+}
+
+h1 {
+  text-align: center;
+}
+
+section {
+  margin: 12px 8px;
+}
+
+section .review-list {
+  width: 100%;
+  position: relative;
+}
+
+section .review-list > a {
+  display: flex;
+  justify-content: left;
+}
+
+section .review-list .review-image-box {
+  width: 180px;
+  height: 160px;
+  margin: 0 10px;
+}
+
+section .review-list .review-image-box .review-img {
+  display: flex;
+  justify-content: center;
+}
+
+section .review-list img {
+  width: 160px;
+  height: 160px;
+}
+
+.review-list > div.review-icon {
+  position: absolute;
+  bottom: 21px;
+  right: 10px;
+}

@@ -1,0 +1,120 @@
+@charset "utf-8";
+.container {
+  padding-top: 64px;
+}
+
+h1 {
+  text-align: center;
+}
+
+article {
+  width: 70%;
+  border-top: 1px solid #eee;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.icon-select {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.icon-select > img {
+  max-width: 280px;
+}
+
+.iconck {
+  margin-top: 10px;
+}
+
+.user-value {
+  margin-top: 50px;
+  min-width: 150px;
+  width: 240px;
+}
+
+section {
+  /* width: 80vw; */
+  margin: 50px auto;
+}
+
+/* YJS 추가 시작 */
+
+.sell-list{
+  display: flex;
+  justify-content: center;
+  height : auto;
+}
+
+.sell-nav {
+  	align-self: flex-start;
+	width: 60vw;
+    min-width: 250px;
+}
+
+.sell-nav a {
+	width: inherit;
+	height: 102px;
+	padding-left: 20px;
+}
+
+.left-button {
+  width: 50px;
+  height: 50px;
+  align-self: flex-end;
+  opacity: 0.6;
+  border: none;
+  position: absolute;
+  left: 30px;
+}
+
+.right-button {
+  width: 50px;
+  height: 50px;
+  align-self: flex-end;
+  opacity: 0.6;
+  border: none;
+  position: absolute;
+  right: 30px;
+}
+
+#pageFor a {
+	color: #818181;
+}
+
+#pageFor {
+	align-self: flex-end;
+}
+
+/* YJS 추가 끝 */
+
+.list-group > a {
+  display: flex;
+  justify-content: left;
+}
+
+.list-group .seller-image-box {
+  width: 80px;
+  height: 80px;
+  margin: 0 10px;
+}
+
+.list-group .seller-image-box .seller-img {
+  display: flex;
+  justify-content: center;
+}
+
+.list-group img {
+  width: 80px;
+  height: 80px;
+}
+
+.list-group div.seller-icon {
+  position: absolute;
+  bottom: 21px;
+  right: 10px;
+}

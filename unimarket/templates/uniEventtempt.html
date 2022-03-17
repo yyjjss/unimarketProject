@@ -1,0 +1,102 @@
+{% extends 'uniBase.html' %} {% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- reset -->
+    <link rel="stylesheet" href="{% static '/setting/css/reset.css' %}" />
+    <!-- Bootstrap CSS -->
+    <link href="{% static '/setting/css/bootstrap.min.css' %}" rel="stylesheet" media="screen" />
+    <!-- font css -->
+    <script src="https://use.fontawesome.com/e3c0fc771e.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+      integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+      crossorigin="anonymous"
+    />
+    <!-- 반응형 웹 설정 -->
+    <link rel="stylesheet" href="{% static '/setting/css/ie10.css' %}" />
+    <script rel="stylesheet" href="{% static '/setting/js/ie10.js' %}"></script>
+    <!-- Default js -->
+    <script type="text/javascript" src="{% static '/setting/js/html5shiv.js' %}"></script>
+    <script type="text/javascript" src="{% static '/setting/js/respond.min.js' %}"></script>
+
+    <!-- style css -->
+    <link rel="stylesheet" href="{% static '/css/common.css' %}" />
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/eventtempt.css' %}" />
+    {% endblock %}
+    <!-- chat -->
+
+    <!-- Java script -->
+    <script src="{% static '/setting/js/jquery-3.6.0.min.js' %}"></script>
+    <script>
+      $.ajaxSetup({
+        headers: { "X-CSRFToken": "{{csrf_token}}" },
+      });
+    </script>
+    <script src="{%static '/js/base.js'%}"></script>
+    <title>{% block title %}Uni Eventtempt{% endblock %}</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header>
+      
+    </header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <main>
+        <div class="header">
+          <div class="title">
+            <span>이벤트</span>
+            <h1><strong>{{dto.noticeTitle}} 추천 이벤트</strong></h1>
+          </div>
+          <span>{{dto.noticeDate|date:"Y.m.d"}}</span>
+        </div>
+        <div class="summary">
+	        <div class="event-img">
+	        	<img src="{{dto.eventImg.url}}">
+	        </div>
+	        <p>
+	          {{dto.noticeContent}}
+	        </p>
+        </div>
+        <div class="recent-flow">
+        
+            <div class="recent-list">
+            {%for item in items%}
+              <div class="recent-goods clearfix">
+                <a href="uniDetail?itemNo={{item.itemNo}}">
+                  <img src="{{item.itemImg.url}}" alt="추천이미지" />
+                  <div class="goods-summary">
+	                  <h6>{{item.title}}</h6>
+	                  <span class="glyphicon glyphicon-eye-open">{{item.readCnt}}views</span>
+	                  <strong class="pull-right"> {{item.price}}원</strong>
+                  </div>
+                </a>
+              </div>
+              {% endfor %}
+              
+              
+            </div><!-- recent-list -->
+          </div><!-- recent-flow -->
+      </main>
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer>
+      
+    </footer>
+    <!-----------------end---------------------------->
+
+    <!-- Bootstrap JS -->
+
+    <script src="{% static '/setting/js/bootstrap.min.js' %}"></script>
+  </body>
+</html>

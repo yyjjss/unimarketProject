@@ -1,0 +1,15 @@
+@charset "utf-8";
+.container {
+  padding-top: 64px;
+  width: inherit;
+  height: 500px;
+}
+
+main {
+  margin-top: 20vh;
+}
+
+h1,
+h3 {
+  text-align: center;
+}

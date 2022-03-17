@@ -1,0 +1,51 @@
+@charset "utf-8";
+
+.container {
+  width: 500px;
+  height: 600px;
+}
+
+h1,
+h3 {
+  text-align: center;
+}
+
+.report-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.report-text > textarea {
+  width: 400px;
+  height: 200px;
+  resize: none;
+}
+
+.review-select {
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+}
+
+.review-select input[type="submit"] {
+  width: 58px;
+  height: 34px;
+  color: white;
+  padding: 6px 12px;
+  background: #6667ab;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 0 5px;
+}
+
+/* YJS 추가 */
+.btn-submit {
+  height: 34px;
+  color: white;
+  padding: 6px 12px;
+  background: #6667ab;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 0 5px;
+}

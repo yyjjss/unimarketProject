@@ -1,0 +1,159 @@
+{% extends 'uniBase.html' %} {% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- reset -->
+    <link rel="stylesheet" href="{% static '/setting/css/reset.css' %}" />
+    <!-- Bootstrap CSS -->
+    <link
+      href="{% static '/setting/css/bootstrap.min.css' %}"
+      rel="stylesheet"
+      media="screen"
+    />
+    <!-- font css -->
+    <script src="https://use.fontawesome.com/e3c0fc771e.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+      integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+      crossorigin="anonymous"
+    />
+    <!-- 반응형 웹 설정 -->
+    <link rel="stylesheet" href="{% static '/setting/css/ie10.css' %}" />
+    <script rel="stylesheet" href="{% static '/setting/js/ie10.js' %}"></script>
+    <!-- Default js -->
+    <script
+      type="text/javascript"
+      src="{% static '/setting/js/html5shiv.js' %}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{% static '/setting/js/respond.min.js' %}"
+    ></script>
+
+    <!-- style css -->
+    <link rel="stylesheet" href="{% static '/css/common.css' %}" />
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/dibs.css' %}" />
+    {% endblock %}
+    <!-- chat -->
+
+    <!-- Java script -->
+    <script src="{% static '/setting/js/jquery-3.6.0.min.js' %}"></script>
+    <script>
+      $.ajaxSetup({
+        headers: { "X-CSRFToken": "{{csrf_token}}" },
+      });
+    </script>
+    <script src="{%static '/js/base.js'%}"></script>
+    <title>{% block title %}Uni Dibs{% endblock %}</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header></header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <main>
+        <article>
+          <div class="dibs-title">
+            <!--  마이페이지 뒤로 가는 링크  -->
+            <button class="dibs-backpage" onclick="location.href='uniMypage?'">
+              <i class="fas fa-arrow-circle-left"></i>
+            </button>
+            <h1><strong>찜 목록</strong></h1>
+          </div>
+          <hr />
+          <section>
+            {% for like in likes %}
+
+            <div class="dibs-list">
+              <a href="uniDetail?itemNo={{like.itemNo}}">
+                <div class="dibs-image-box">
+                  <div class="dibs-img">
+                    <img src="{{ like.itemImg.url }}" alt="상품이미지" />
+                  </div>
+                </div>
+                <div class="dibs-value">
+                  <h4>{{like.title}}</h4>
+                  <h5></h5>
+                  <span>{{like.price}}원</span>
+                </div>
+              </a>
+              {% if like.sellStat == 1 %}
+              <button id="Sellstat" disabled>판매완료</button>
+              {% endif %}
+              <button
+                id="btn-Like"
+                class="like"
+                value="{{like.itemNo}}"
+                name="{{like.itemNo}}"
+              >
+                {% if likeck == 0 %}
+                <i
+                  id="heart-{{like.itemNo}}"
+                  class="far fa-heart"
+                  style="color: red"
+                ></i>
+                {% else %}
+                <i
+                  id="heart-{{like.itemNo}}"
+                  class="fa fa-heart"
+                  style="color: red"
+                ></i>
+                {% endif %} 찜
+              </button>
+              <hr />
+            </div>
+
+            <!-- 좋아요 하트 변경  -->
+            <script type="text/javascript">
+              $(".like").click(function () {
+                var itemNo = $(this).val();
+                let param = { itemNo: itemNo };
+                console.log(JSON.stringify(param));
+                $.ajax({
+                  url: "{% url 'uniDibs' %}",
+                  type: "POST",
+                  data: JSON.stringify(param),
+                  dataType: "json",
+                  success: function (response) {
+                    if (response.message == "좋아요") {
+                      //받아온데이터에서 message가 '좋아요'이면 실행되도록
+                      console.log(response);
+                      $("#heart-" + response.itemNo).attr(
+                        "class",
+                        "fa fa-heart"
+                      ); //#heart-{{dto.itemNo}}에서 class를 변경해서 채워진 하트로 변경
+                    } else if (response.message == "좋아요 취소") {
+                      $("#heart-" + response.itemNo).attr(
+                        "class",
+                        "far fa-heart"
+                      ); //#heart-{{dto.itemNo}}에서 class를 변경해서 빈 하트로 변경
+                    }
+                  },
+                });
+              });
+            </script>
+            {% endfor %}
+          </section>
+        </article>
+      </main>
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer></footer>
+    <!-----------------end---------------------------->
+
+    <!-- Bootstrap JS -->
+    <script src="{% static '/setting/js/bootstrap.min.js' %}"></script>
+  </body>
+</html>

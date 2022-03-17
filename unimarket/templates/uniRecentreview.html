@@ -1,0 +1,72 @@
+{% extends 'uniBase.html' %} 
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/recentreview.css' %}" />
+    {% endblock %}
+    <!-- script -->
+    {% block script %}
+	<script src="{% static 'js/recentreview.js' %}"></script>
+    {% endblock %}
+    <title>{% block title %}Uni Recentreview{% endblock %}</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header>{% block header %} {% endblock %}</header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <main>
+        <h1>추천 만족도 조사</h1>
+        <h3>고객님, 추천드린 상품은 마음에 드셨나요?</h3>
+
+        <form name="recentForm" method="post" action="updateRecentreview" onsubmit="return radioCk()">
+        {% csrf_token  %}
+          <input id="recentItemNo" name="recentItemNo" type="hidden">
+          <div class="recent-review">
+            <input id="take-1" type="radio" name="recentreview" value="1"/>
+            <label for="take-1" class="btn btn-default"> 매우 불만족 </label>
+            <input id="take-2" type="radio" name="recentreview" value="2"/>
+            <label for="take-2" class="btn btn-default"> 불만족 </label>
+            <input id="take-3" type="radio" name="recentreview" value="3"/>
+            <label for="take-3" class="btn btn-default"> 보통 </label>
+            <input id="take-4" type="radio" name="recentreview" value="4"/>
+            <label for="take-4" class="btn btn-default"> 만족 </label>
+            <input id="take-5" type="radio" name="recentreview" value="5"/>
+            <label for="take-5" class="btn btn-default"> 매우만족 </label>
+          </div>
+          <h6 style="color:red;"> &nbsp; &nbsp; &nbsp;*더 나은 서비스를 위한 필수조사로 완료되지않을 경우 거래신청이 불가능합니다.<h6>
+          <div class="review-select">
+          	<div id="submit-tooltip" title ="">
+            <input class="btn-submit" type="submit" value="전송" />
+            </div>
+            <div id="close-tooltip" title ="">
+            <input class="btn btn-default btn-close" type="button" value="닫기" />
+            </div>
+          </div>
+        </form>
+      </main>
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer>{% block footer %}{% endblock %}</footer>
+    <!-----------------end---------------------------->
+
+    <!-- Bootstrap JS -->
+	{% block script2 %}
+    <script>
+    $(document).ready(function(){
+    	const urlParams = new URL(location).searchParams;
+    	document.getElementById("recentItemNo").value = urlParams.get('itemNo');
+    });
+    </script>
+    {% endblock %}
+  </body>
+</html>

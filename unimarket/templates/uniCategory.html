@@ -1,0 +1,246 @@
+{% extends 'uniBase.html' %} {% load static %} {% load mathfilters %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- reset -->
+    <link rel="stylesheet" href="{% static '/setting/css/reset.css' %}" />
+    <!-- Bootstrap CSS -->
+    <link
+      href="{% static '/setting/css/bootstrap.min.css' %}"
+      rel="stylesheet"
+      media="screen"
+    />
+    <!-- font css -->
+    <script src="https://use.fontawesome.com/e3c0fc771e.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+      integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+      crossorigin="anonymous"
+    />
+    <!-- 반응형 웹 설정 -->
+    <link rel="stylesheet" href="{% static '/setting/css/ie10.css' %}" />
+    <script rel="stylesheet" href="{% static '/setting/js/ie10.js' %}"></script>
+    <!-- Default js -->
+    <script
+      type="text/javascript"
+      src="{% static '/setting/js/html5shiv.js' %}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{% static '/setting/js/respond.min.js' %}"
+    ></script>
+
+    <!-- style css -->
+    <link rel="stylesheet" href="{% static '/css/common.css' %}" />
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/category.css' %}" />
+    {% endblock %}
+    <!-- chat -->
+
+    <!-- Java script -->
+    <script src="{% static '/setting/js/jquery-3.6.0.min.js' %}"></script>
+    <script>
+      $.ajaxSetup({
+        headers: {
+          "X-CSRFToken": "{{csrf_token}}",
+        },
+      });
+    </script>
+    <script src="{%static '/js/base.js'%}"></script>
+
+    <title>{% block title %}Uni Category{% endblock %}</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header></header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <!--------------카테고리이름 및 정렬기준 --------->
+
+      <!----------------------end -------------------->
+      <!---------------제품반복 (실제작업시 1개만 반복시키면 됩니다.)------------>
+      <section>
+        <div class="section-guidance">
+          {% if count == 0 %}
+          <div>
+            <h3>해당 게시글이 없습니다.</h3>
+          </div>
+          {% else %}
+          <div>
+            <h3>{{name}}</h3>
+          </div>
+          {% endif %}
+          <div class="delete btn btn-default pull-right">
+            {% csrf_token %} {% if sellStat == '0' %}
+            <input
+              id="delete"
+              type="checkbox"
+              name="sellStat"
+              value="0"
+              checked
+            />
+            {% else %}
+            <input id="delete" type="checkbox" name="sellStat" value="None" />
+            {% endif %}
+            <label for="delete" class="exception"> 거래완료 제외 </label>
+          </div>
+          <!-- 판매완료 제품 제외하는 기능을 비동기를 포기하고 url로 보내는 식으로 함 -->
+          <script type="text/javascript">
+            $("#delete").on("change", function () {
+              //체크되어있으면 이 함수로 보낸다
+              if ($("#delete").is(":checked")) {
+                var url = window.location.href;
+                let param = { sellStat: "0" };
+                console.log(param);
+                $.ajax({
+                  url: "{% url 'uniCategory' %}",
+                  type: "POST",
+                  data: JSON.stringify(param),
+                  dataType: "json",
+                  success: function (response) {
+                    alert("판매완료 상품을 제외합니다.");
+                    $("#delete").val = 0; //value값 0으로
+                    $("#delete").attr("checked"); //check 유지시킴
+                    if (url.indexOf("sellStat") > -1) {
+                      //url 바꿈
+                      url = url.replace("sellStat=all", "sellStat=0");
+                    } else if (url.indexOf("=") > -1) {
+                      url += "&sellStat=0";
+                    } else if (url.indexOf("?") > -1) {
+                      url += "sellStat=0";
+                    } else {
+                      url += "?sellStat=0";
+                    }
+                    window.location.href = url;
+                  },
+                });
+              }
+              //체크 안되있을 시 여기로
+              else {
+                var url = window.location.href;
+                let param = { sellStat: "None" };
+                console.log(param);
+                $.ajax({
+                  url: "{% url 'uniCategory' %}",
+                  type: "POST",
+                  data: JSON.stringify(param),
+                  dataType: "json",
+                  success: function (response) {
+                    alert("판매완료 상품을 포합니다.");
+                    $("#delete").val = "None";
+                    $("#delete").removeAttr("checked");
+                    if (url.indexOf("sellStat=0&") > -1) {
+                      url = url.replace("sellStat=0&", "");
+                    } else if (url.indexOf("&sellStat") > -1) {
+                      url = url.replace("&sellStat=0", "");
+                    } else {
+                      url = url.replace("?sellStat=0", "");
+                    }
+                    window.location.href = url;
+                  },
+                });
+              }
+            });
+          </script>
+          <div class="clearfix btn-group">
+            <button
+              class="btn btn-info btn-xs dropdown-toggle"
+              type="button"
+              data-toggle="dropdown"
+            >
+              정렬옵션 <span class="caret"></span>
+            </button>
+            <!-- dropdown 메뉴. -->
+            <ul class="pull-right dropdown-menu" role="menu">
+              <!-- {% csrf_token %} -->
+              <li>
+                <a
+                  href="uniCategory?cat={{cate_condition}}&kwrd={{keyword_condition}}&order=-uDate"
+                  >최신순</a
+                >
+              </li>
+              <li>
+                <a
+                  href="uniCategory?cat={{cate_condition}}&kwrd={{keyword_condition}}&order=price"
+                  >낮은가격순</a
+                >
+              </li>
+              <li>
+                <a
+                  href="uniCategory?cat={{cate_condition}}&kwrd={{keyword_condition}}&order=-price"
+                  >높은가격순</a
+                >
+              </li>
+              <li>
+                <a
+                  href="uniCategory?cat={{cate_condition}}&kwrd={{keyword_condition}}&order=readCnt"
+                  >조회수순</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <form method="POST">
+          {% for dto in dtos %}
+          <div class="category-goods clearfix">
+            <!-- 상세페이지로 이동 -->
+            <a href="uniDetail?itemNo={{dto.itemNo}}">
+              {% if dto.itemImg %}
+              <img src="{{ dto.itemImg.url }}" alt="" />
+              {% else %}
+              <img src="{% static '/images/market_logo_cut.png' %}" alt="" />
+              {% endif %}
+
+              <h6>{{ dto.title }}</h6>
+              <span class="glyphicon glyphicon-time"></span> {{ dto.time }}
+              <strong class="pull-right"> {{ dto.price }}원 </strong>
+            </a>
+          </div>
+        </form>
+        {% endfor %}
+      </section>
+      <!----------------------end-------------------------------->
+
+      <br />
+
+      <div class="page-index">
+        {% if startpage > pageblock %}
+        <a
+          href="uniCategory?cat={{cate_condition}}&kwrd={{keyword_condition}}&order={{order_condition}}&page={{startpage|sub:pageblock}}"
+          >[◀]</a
+        >
+        {% endif %} {% for p in pages %} {% if p == page %}
+        <b>{{p}}</b>
+        {%endif %} {% if p != page %}
+        <a
+          href="uniCategory?cat={{cate_condition}}&kwrd={{keyword_condition}}&order={{order_condition}}&page={{p}}"
+          >{{p}}</a
+        >
+        {% endif %} {% endfor %} {% if endpage < pagecount %}
+        <a
+          href="uniCategory?cat={{cate_condition}}&kwrd={{keyword_condition}}&order={{order_condition}}&page={{startpage|add:pageblock}}"
+          >[▶]</a
+        >
+        {% endif %}
+      </div>
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer></footer>
+    <!-----------------end---------------------------->
+
+    <!-- Bootstrap JS -->
+
+    <script src="{% static '/setting/js/bootstrap.min.js' %}"></script>
+  </body>
+</html>

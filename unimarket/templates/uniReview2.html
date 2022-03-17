@@ -1,0 +1,123 @@
+{% extends 'uniBase.html' %} {% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- reset -->
+    <link rel="stylesheet" href="{% static '/setting/css/reset.css' %}" />
+    <!-- Bootstrap CSS -->
+    <link href="{% static '/setting/css/bootstrap.min.css' %}" rel="stylesheet" media="screen" />
+    <!-- font css -->
+    <script src="https://use.fontawesome.com/e3c0fc771e.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+      integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+      crossorigin="anonymous"
+    />
+    <!-- 반응형 웹 설정 -->
+    <link rel="stylesheet" href="{% static '/setting/css/ie10.css' %}" />
+    <script rel="stylesheet" href="{% static '/setting/js/ie10.js' %}"></script>
+    <!-- Default js -->
+    <script type="text/javascript" src="{% static '/setting/js/html5shiv.js' %}"></script>
+    <script type="text/javascript" src="{% static '/setting/js/respond.min.js' %}"></script>
+
+    <!-- style css -->
+    <link rel="stylesheet" href="{% static '/css/common.css' %}" />
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/review.css' %}" />
+    {% endblock %}
+    <!-- chat -->
+
+    <!-- Java script -->
+    <script src="{% static '/setting/js/jquery-3.6.0.min.js' %}"></script>
+    <script>
+      $.ajaxSetup({
+        headers: { "X-CSRFToken": "{{csrf_token}}" },
+      });
+    </script>
+    <script src="{%static '/js/base.js'%}"></script>
+    <title>{% block title %}Uni review{% endblock %}</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header>
+      {% block header %}
+      {% endblock %}
+    </header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <main>
+        <h1>리뷰</h1>
+        <h3>고객님, 판매자님과 상품은 어떠셨나요?</h3>
+        <br />
+        <form name="review" method="post" action="uniReview" onsubmit="return reviewCk()">
+          <input id="ItemNo" name="ItemNo" value="{{itemNo}}" type="hidden">
+          {% csrf_token %}
+          <div class="review">
+            <input id="take-1" type="radio" class="review" name="review" value="1"/>
+            <label for="take-1" class="btn btn-default"> 매우 불만족 </label>
+            <input id="take-2" type="radio" class="review" name="review" value="2" />
+            <label for="take-2" class="btn btn-default"> 불만족 </label>
+            <input id="take-3" type="radio" class="review" name="review" value="3" />
+            <label for="take-3" class="btn btn-default"> 보통 </label>
+            <input id="take-4" type="radio" class="review" name="review" value="4" />
+            <label for="take-4" class="btn btn-default"> 만족 </label>
+            <input id="take-5" type="radio" class="review" name="review" value="5" />
+            <label for="take-5" class="btn btn-default"> 매우만족 </label>
+          </div>
+          <div class="review-select">
+            <input type="submit" value="전송" />
+            <input class="btn btn-default" type="button" onclick="reviewClose()" value="닫기"  />
+          </div>
+        </form>
+        <script type="text/javascript">
+			function reviewCk(){
+				var check = $("input[name='review']:checked").val();
+				var itemNo = $("#ItemNo").val();
+				let param = {"check": check,
+							 "itemNo" : itemNo}
+				console.log(param)
+				if(check){
+					document.review.submit();
+					$.ajax({
+						url : "{% url 'uniReview' %}",
+						type : "POST",
+						data : JSON.stringify(param),
+						contentType: "application/json; charset=UTF-8",
+						dataType: "json",
+						success: function() {
+							window.opener.location.reload();
+							window.close();	
+						}
+					});
+				}else{
+					alert("평점을 선택해주세요!");
+					return false;
+				}
+			}
+			
+			function reviewClose(){
+				window.close();
+			}
+		</script>
+      </main>
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer>
+      {% block footer %}
+      {% endblock %}
+    </footer>
+    <!-----------------end---------------------------->
+
+    <!-- Bootstrap JS -->
+
+    <script src="{% static '/setting/js/bootstrap.min.js' %}"></script>
+  </body>
+</html>

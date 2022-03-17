@@ -1,0 +1,42 @@
+@charset "utf-8";
+.container {
+  padding-top: 64px;
+}
+
+h1 {
+  text-align: center;
+}
+
+article {
+  width: 70%;
+  border-top: 1px solid #eee;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+section {
+  width: 70%;
+  margin: 50px auto;
+}
+
+.icon-select {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.icon-select > img {
+  max-width: 280px;
+}
+
+.iconck {
+  margin-top: 10px;
+}
+
+.user-value {
+  min-width: 150px;
+  width: 240px;
+}

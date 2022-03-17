@@ -1,0 +1,447 @@
+{% extends 'uniBase.html' %} {% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- style css -->
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/chatInfo.css' %}" />
+    {% endblock %}
+    <!-- Java script -->
+    {% block script %}
+    <script src="{% static 'js/chatMap.js' %}"></script>
+    <script
+      type="text/javascript"
+      src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{kakao_Mapkey}}&libraries=services"
+    ></script>
+    <script type="text/javascript">
+      // 챗팅에 따른 화면 전환 ajax
+      function chatRoomSearch() {
+        var roomSearch = document.getElementById("chatRoomList").value;
+        console.log(roomSearch);
+        var param = {
+          roomSearch: String(roomSearch),
+        };
+        $.ajax({
+          url: "chatRoomSearch",
+          type: "POST",
+          data: JSON.stringify(param),
+          dataType: "json",
+          success: function (data) {
+            console.log(data);
+            var result = " "; // 채팅창 리스트<ul id="chatList">
+
+            console.log(data["listck"]);
+            result += '<ul id="chatList">';
+            if (data.listck == "0") {
+              result += "<li>";
+              result += "<h5>검색한 채팅방이 없습니다.</h5>";
+              result += "</li>";
+            } else {
+              // 판매내역 리스트
+              $.each(data["dtoChatList"], function (index, chatList) {
+                result += "<li>";
+                if(chatList["itemImg"]){
+                	result +=
+                        '<img src="/media/' +
+                        chatList["itemImg"] +
+                        '" alt="채팅 상품 이미지" />';
+                }else{
+                	result +=
+                        '<img src="../../static/images/market_logo_cut.png" alt="채팅 상품 이미지" />';
+                }
+                result +=
+                  '<a href="uniChatRoomInfo?chatNo=' +
+                  chatList["chatNo"] +
+                  "&itemNo=" +
+                  chatList["itemNo"] +
+                  '">';
+                result += "<div>";
+                result += "<h5>" + chatList["title"] + "</h5>";
+                result +=
+                  "<h6>" +
+                  data["memList"][index].nickname +
+                  "/" +
+                  data["otherList"][index].nickname +
+                  "</h6>";
+                result += "</div>";
+                result += "</a>";
+                result += "</li>";
+              });
+            }
+
+            $("#chatList").html(result);
+          },
+          error: function (request, status, error) {
+            console.log(
+              "code = " +
+                request.status +
+                " message = " +
+                request.responseText +
+                " error = " +
+                error
+            ); // 실패 시 처리
+            console.log("error");
+          },
+        });
+      }
+
+      // 거래확정 버튼 이벤트
+      function buyComplete() {
+        var otherMemNo = $("#otherMemNo").val();
+        var itemNo = $("#itemNo").val();
+        var chatNo = $("#chatNo").val();
+        var username = "{{memList.nickname|escapejs}}";
+        var buyusername = "{{otherList.nickname|escapejs}}";
+        var itemTitle = "{{chatItem.title|escapejs}}";
+        //var itemUrl = "uniDetail?itemNo="+itemNo
+        console.log(username);
+        console.log(itemTitle);
+
+        if (!confirm("거래를 확정하시겠습니다?\n※확정 후 변경은 불가합니다.")) {
+          return false;
+        } else {
+          //console.log(alarmSocket);
+          alarmSocket.onmessage = (e) => {
+            var data = JSON.parse(e.data);
+          };
+          alarmSocket.onclose = (e) => {
+            console.error("alarm socket closed unexpectedly");
+          };
+
+          alarmSocket.send(JSON.stringify({
+              message: username +"님께서 거래확정을 요청하셨습니다.\n수락하시겠습니까?\n\n 상품 : " +itemTitle,
+              sellMemNo: memNo,
+              buyMemNo: otherMemNo,
+              itemNo: itemNo,
+              itemTitle: itemTitle,
+              chatNo: chatNo,
+              buyusername: buyusername,
+              content: "상품 [" +itemTitle +"]의 거래확정을 판매자[" +username +"]님께서 요청하셨습니다.",
+              alarm: "applyAlarm",
+              //"itemUrl" : itemUrl,
+            })
+          );
+          
+          location.reload()
+
+        }
+      }
+    </script>
+    {% endblock %}
+    <title>{% block title %}Uni Chat{% endblock %}</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header></header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <input id="chatNo" name="chatNo" type="hidden" value="{{chatNo}}" />
+      <input id="memNo" name="memNo" type="hidden" value="{{memNo}}" />
+      <input
+        id="otherMemNo"
+        name="otherMemNo"
+        type="hidden"
+        value="{{otherList.memNo}}"
+      />
+      <input
+        id="itemNo"
+        name="itemNo"
+        type="hidden"
+        value="{{chatItem.itemNo}}"
+      />
+      <input
+        id="memProImg"
+        name="memProImg"
+        type="hidden"
+        value="{{memList.proImg.url}}"
+      />
+      <input
+        id="memNickname"
+        name="memNickname"
+        type="hidden"
+        value="{{memList.nickname}}"
+      />
+      <input
+        id="otherProImg"
+        name="otherProImg"
+        type="hidden"
+        value="{{otherList.proImg.url}}"
+      />
+      <input
+        id="otherNickname"
+        name="otherNickname"
+        type="hidden"
+        value="{{otherList.nickname}}"
+      />
+      <div class="chat-box">
+        <aside>
+          <div class="chat-search-home">
+            <div class="chat-search">
+              <input id="chatRoomList" type="text" placeholder="search" />
+              <button id="roomsearch" type="button" onclick="chatRoomSearch()">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+          <ul id="chatList">
+            {% if dtoChatList != None %} {% for chatList in dtoChatList %}
+            <li>
+            {% if chatList.itemImg %}
+              <img src="{{chatList.itemImg.url}}" alt="채팅 상품 이미지" />
+            {% else %}
+            	<img src="{% static '/images/market_logo_cut.png' %}" alt="" />
+            {% endif %}
+              <a href="uniChatRoomInfo?chatNo={{chatList.chatNo}}&itemNo={{chatList.itemNo}}">
+                <div>
+                  <h5>{{chatList.title|truncatewords:7}}</h5>
+                  <h6>
+                    {{chatList.buyNick.nickname}} /
+                    {{chatList.sellNick.nickname}}
+                  </h6>
+                </div>
+              </a>
+            </li>
+            {% endfor %} {% else %}
+            <li>
+              <h5>개설된 채팅방이 없습니다.</h5>
+            </li>
+            {% endif %}
+          </ul>
+        </aside>
+        <main>
+          {% if chatNo != None%}
+          <a href="uniDetail?itemNo={{chatItem.itemNo}}">
+            <div class="chat-header">
+            {% if chatItem.itemImg %}
+              <img src="{{chatItem.itemImg.url}}" alt="상품이미지" />
+             {% else %}
+              <img src="{% static '/images/market_logo_cut.png' %}" alt="" />
+             {% endif %}
+              <div>
+                <h4>{{chatItem.title}}</h4>
+                <h5>{{chatItem.info|truncatewords:10}}</h5>
+              </div>
+            </div>
+          </a>
+          <ul class="chat">
+            {% for chat in dtoChat%} {% if chat.fromSender == memNo %}
+            <li class="me">
+              <div class="entente">
+                <h6><b>{{memList.nickname}}</b></h6>
+
+                <div class="message">{{chat.chatContent|urlize}}</div>
+              </div>
+              <div class="me-img">
+                {% if memList.proImg.url == "1" %}
+                <img src="{% static '/images/고양.jpg' %}" alt="kdb" />
+                {% elif memList.proImg.url == "2" %}
+                <img src="{% static '/images/행성1.jpg' %}" alt="fod" />
+                {% else %}
+                <img src="{% static '/images/로켓.jpg' %}" alt="can" />
+                {% endif %}
+              </div>
+            </li>
+            {% else %}
+            <li class="you">
+              <div class="your-img">
+                {% if otherList.proImg.url == "1" %}
+                <img src="{% static '/images/고양.jpg' %}" alt="kdb" />
+                {% elif otherList.proImg.url == "2" %}
+                <img src="{% static '/images/행성1.jpg' %}" alt="fod" />
+                {% else %}
+                <img src="{% static '/images/로켓.jpg' %}" alt="can" />
+                {% endif %}
+              </div>
+              <div class="entente">
+                <h6><b>{{otherList.nickname}}</b></h6>
+                <div class="message">{{chat.chatContent|urlize }}</div>
+              </div>
+            </li>
+            {% endif %} {% endfor %}
+          </ul>
+          <div class="chat-foot">
+            {% if chatItem.sellStat == 1 %}
+            <textarea
+              id="chat-message-input"
+              class="sendContent"
+              placeholder="Type your message"
+              disabled="disabled"
+            ></textarea>
+            <button type="button" class="kakaoMap" disabled="disabled">
+              <i class="fas fa-map"></i>
+            </button>
+            {% if chatItem.memNo == memNo %}
+            <input
+              id="sale-button"
+              type="button"
+              value="거래완료"
+              disabled="disabled"
+            />
+            {% endif %}
+            <input
+              id="chat-message-submit"
+              type="submit"
+              size="100"
+              value="전송"
+              disabled="disabled"
+            /><br />
+            {% else %}
+            <textarea
+              id="chat-message-input"
+              class="sendContent"
+              placeholder="Type your message"
+            ></textarea>
+            <button type="button" class="kakaoMap" onclick="readyMap()">
+              <i class="fas fa-map" style="color:white"></i>
+            </button>
+            {% if chatItem.memNo == memNo %}
+            <input
+              id="sale-button"
+              type="button"
+              value="거래확정"
+              onclick="buyComplete()"
+            />
+            {% endif %}
+            <input
+              id="chat-message-submit"
+              type="submit"
+              size="100"
+              value="전송"
+            /><br />
+            {% endif %}
+          </div>
+          {% else %}
+          <h4>채팅방을 선택해주세요</h4>
+          {% endif %}
+        </main>
+      </div>
+
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer></footer>
+    <!-----------------end---------------------------->
+    {% block script2 %}
+    <script type="text/javascript">
+      $('.chat').scrollTop($('.chat')[0].scrollHeight);
+      var chatNo = $("#chatNo").val();
+      var memNo = $("#memNo").val();
+      var memProImg = $("#memProImg").val();
+      var memNickname = $("#memNickname").val();
+      var otherProImg = $("#otherProImg").val();
+      var otherNickname = $("#otherNickname").val();
+      console.log("other : " + otherNickname);
+      var itemNo = $("#itemNo").val();
+      var room_name = "chatNo=" + chatNo + "&itemNo=" + itemNo;
+      var chatSocket = new WebSocket(
+        `ws://${window.location.host}/ws/uniChatRoomInfo?${room_name}`
+      );
+      console.log(chatSocket)
+      chatSocket.onmessage = (e) => {
+        var data = JSON.parse(e.data);
+        var message = data["message"];
+        var senderMemNo = data["senderMemNo"];
+        console.log("send : " + senderMemNo);
+        var result = "";
+        if (senderMemNo == memNo) {
+          result += '<li class="me">';
+          result += '<div class="entente">';
+          result += "<h6><b>" + memNickname + "</b></h6>";
+          result += '<div class="message">';
+          if (message.substr(0, 4) == "http") {
+            result +=
+              '<a href="' +
+              message +
+              '" target="_blank">' +
+              message +
+              "</a></div>";
+          } else {
+            result += message + "</div>";
+          }
+          result += "</div>";
+          result += '<div class="me-img">';
+          if (memProImg == 1) {
+            result +=
+              '<img src="../../static/images/고양.jpg" alt="kdb" /></div>';
+          } else if (memProImg == 2) {
+            result +=
+              '<img src="../../static/images/행성1.jpg" alt="fod" /></div>';
+          } else {
+            result +=
+              '<img src="../../static/images/로켓.jpg" alt="can" /></div>';
+          }
+          result += "</li>";
+        } else {
+          result += '<li class="you">';
+          result += '<div class="your-img">';
+          if (otherProImg == 1) {
+            result +=
+              '<img src="../../static/images/고양.jpg" alt="kdb" /></div>';
+          } else if (otherProImg == 2) {
+            result +=
+              '<img src="../../static/images/행성1.jpg" alt="fod" /></div>';
+          } else {
+            result +=
+              '<img src="../../static/images/로켓.jpg" alt="can" /></div>';
+          }
+          result += '<div class="entente">';
+          result += "<h6><b>" + otherNickname + "</b></h6>";
+          result += '<div class="message">';
+          if (message.substr(0, 4) == "http") {
+            result += '<a href="' + message + '">' + message + "</a>";
+          } else {
+            result += message + "</div>";
+          }
+          result += "</div>";
+          result += "</li>";
+        }
+        $(".chat").append(result);
+        $('.chat').scrollTop($('.chat')[0].scrollHeight);
+      };
+
+      chatSocket.onclose = (e) => {
+        console.error("Chat socket closed unexpectedly");
+      };
+
+      document.querySelector("#chat-message-input").focus();
+      document
+        .querySelector("#chat-message-input")
+        .addEventListener("keyup", (e) => {
+          if (e.keyCode === 13) {
+            document.querySelector("#chat-message-submit").click();
+          }
+        });
+
+      document
+        .querySelector("#chat-message-submit")
+        .addEventListener("click", (e) => {
+          console.log("click");
+          //var messageInputDom = document.querySelector("#chat-message-input");
+          var messageInputDom = $(".sendContent").val();
+          console.log("1 : " + messageInputDom);
+          var message = messageInputDom;
+          console.log(message);
+          chatSocket.send(
+            JSON.stringify({
+              message: message,
+              senderMemNo: memNo,
+              chatNo: chatNo,
+              group_name: room_name,
+            })
+          );
+
+          document.getElementById("chat-message-input").value = "";
+        });
+    </script>
+    {% endblock %}
+  </body>
+</html>

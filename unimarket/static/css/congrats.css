@@ -1,0 +1,20 @@
+@charset "utf-8";
+.container {
+  padding-top: 64px;
+
+  width: inherit;
+  height: 500px;
+}
+
+main {
+  margin-top: 20vh;
+}
+
+h1 {
+  text-align: center;
+}
+
+main > button {
+  position: relative;
+  left: calc(50% - 34.62px);
+}

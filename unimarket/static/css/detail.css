@@ -1,0 +1,191 @@
+@charset "utf-8";
+
+h3, h6, h5, strong, label{
+	font-family: 'Dongle';
+	font-size: 20px;
+}
+
+.container {
+  padding-top: 64px;
+}
+
+main {
+  width: 90%;
+  margin: 20px auto;
+  border-top: 1px solid black;
+  padding-top: 20px;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.detail-image {
+  width: 450px;
+}
+
+.detail-image > .detail-img {
+  width: 430px;
+  height: 430px;
+}
+
+.detail-image > .detail-img > img {
+  width: 430px;
+  height: 430px;
+}
+
+.detail-section {
+  width: 555px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.category-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.section-top > h3 {
+  margin-top: 0;
+}
+
+.value-table {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.value-table input {
+  width: 100%;
+  font-size: 40px;
+  font-weight: 500;
+  border: 0 solid black;
+  outline: none;
+}
+
+.value-table > span {
+  width : 90px;
+  font-size: 28px;
+  font-weight: 800;
+  color: #EB81C1;
+}
+
+.detail-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-foot > .detail-icons > ul {
+  margin: 0;
+}
+
+.detail-foot ul li input{
+ width:auto
+}
+
+.button-icons {
+  margin-top: 60px;
+  margin-bottom: 30px;
+}
+
+.button-icons button {
+  width: 170px;
+  height: 50px;
+}
+
+.button-icons img {
+  width: 14px;
+  vertical-align: baseline;
+}
+
+/* ------------ 추천상품 -------------------  */
+.detail-recent {
+  position: relative;
+}
+
+.recent-goods{
+	width: 244px;
+    height: 310px;
+    border: 1px solid rgb(238, 238, 238);
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.recent-list {
+    width: inherit;
+    height: 310px;
+    display: flex;
+    justify-content: space-around;
+    overflow: hidden;
+    flex-wrap: wrap;
+}
+
+.recent-goods img {
+	width: 100%;
+    height: 220px;
+}
+
+.recent-goods h6 {
+  margin-left: 10px;
+  font-size: 25px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recent-goods span{
+	margin-left: 14px;
+}
+
+.left-button {
+	width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: -7%;
+    opacity: 0.6;
+    border: none;
+    background: none;
+}
+
+.right-button {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: -7%;
+    opacity: 0.6;
+    border: none;
+    background: none;
+}
+
+.detail-article {
+  width: inherit;
+  height: 500px;
+}
+
+.explanation {
+  margin-right: auto;
+}
+
+.explanation > p {
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+/* ----------------------------media width 426 이하일떄 ----------------------------- */
+@media (max-width: 426px){
+	.detail-section {
+	    width: 300px;
+	}
+	.button-icons {
+	    text-align: center;
+	}
+}

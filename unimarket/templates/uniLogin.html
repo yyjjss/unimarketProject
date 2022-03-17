@@ -1,0 +1,196 @@
+{% extends "uniBase.html" %} {% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+    <!-- style css -->
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/login.css' %}" />
+    {% endblock %}
+    <!-- script -->
+    {% block script %}
+    <script src="https://www.google.com/recaptcha/api.js?render={{recaptcha_site_key}}"></script>
+    {% endblock %}
+  </head>
+  <body>
+    <div class="header"></div>
+    <div class="container">
+      {% block container %}
+      <article>
+        <div class="login-table">
+          <h1>로그인</h1>
+          <br />
+          {% if not memNo %}
+          <form
+            id="login-form"
+            name="loginform"
+            method="post"
+            action="uniLoginpro"
+            onsubmit="return loginck()"
+          >
+            {% csrf_token %}
+            <div class="form-group">
+              <!-----------------------이메일 입력,이메일찾기 ------------------>
+              <label for="email"
+                >이메일 주소 입력&nbsp;
+                <!-- <small>
+								<a href="#" tabindex="6">(이메일을 잊으셨나요?)</a>
+							</small> -->
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="example@email.com"
+                autofocus="on"
+                tabindex="1"
+                class="form-control"
+              />
+              <!--------------------------end-------------------------------->
+            </div>
+
+            <div class="form-group">
+              <label for="password"
+                >비밀번호 &nbsp;
+                <small>
+                  <a href="password_reset_mail" tabindex="6"
+                    >(비밀번호를 잊으셨나요?)</a
+                  >
+                </small>
+              </label>
+              <input
+                type="password"
+                id="passwd"
+                name="passwd"
+                placeholder=""
+                required=""
+                maxlength="32"
+                autofocus="off"
+                tabindex="2"
+                class="form-control"
+              />
+            </div>
+
+            <hr />
+            <script language="javascript">
+              function loginck() {
+                if (!loginform.email.value) {
+                  alert("이메일을 입력하세요");
+                  loginform.email.focus();
+                  return false;
+                } else if (!loginform.passwd.value) {
+                  alert("비밀번호를 입력하세요");
+                  loginform.passwd.focus();
+                  return false;
+                } //else if (grecaptcha.getResponse().length == 0) {
+                //console.log("보안X");
+                //alert("보안 체크박스를 확인해주세요");
+                //return false;
+                //} else if (grecaptcha.getResponse().length != 0) {
+                //console.log("보안O");
+                //}
+                return true;
+              }
+            </script>
+
+            <!--reCaptcha-v3-->
+            <div class="g_recaptcha">
+              <script>
+                var submitted = false;
+                var tokenCreated = false;
+                var formEl = document.getElementById("login-form");
+
+                formEl.addEventListener("submit", function (event) {
+                  console.log("1");
+                  // Check if the recaptcha exists
+                  if (!tokenCreated) {
+                    // Prevent submission
+                    event.preventDefault();
+                    console.log("2");
+
+                    // Prevent more than one submission
+                    if (!submitted) {
+                      submitted = true;
+                      console.log("3");
+                      // needs for recaptacha ready
+                      grecaptcha.ready(function () {
+                        console.log("4");
+                        // do request for recaptcha token
+                        // response is promise with passed token
+                        grecaptcha
+                          .execute("{{recaptcha_site_key}}", {
+                            action: "create_comment",
+                          })
+                          .then(function (token) {
+                            console.log("5");
+                            // add token to form
+                            var input = document.createElement("input");
+                            input.type = "hidden";
+                            input.name = "g-recaptcha-response";
+                            input.value = token;
+                            formEl.appendChild(input);
+
+                            // resubmit the form
+                            tokenCreated = true;
+                            formEl.submit();
+                            console.log("6");
+                          });
+                      });
+                    }
+                  }
+                });
+              </script>
+            </div>
+
+            <div class="login-button">
+              <button
+                type="submit"
+                tabindex="4"
+                class="btn btn-lg"
+                value="Submit"
+                onsubmit="location.href='uniMain'"
+                style="
+                  background-color: #d0c2e8;
+                  font-size: 12px;
+                  width: 109px;
+                  height: 33.3px;
+                  margin-right: 1.5px;
+                "
+              >
+                로그인
+              </button>
+              <button
+                type="button"
+                class="btn btn-lg"
+                style="
+                  background-color: #d0c2e8;
+                  font-size: 12px;
+                  width: 109px;
+                  height: 33.3px;
+                  margin-left: 1.5px;
+                "
+              >
+                <a href="uniRegister"> 회원가입 </a>
+              </button>
+            </div>
+
+            <br />
+          </form>
+          {% endif %} {% if memNo %}
+          <div><span>{{memNo}}</span>님 안녕하세요!</div>
+          {% endif %}
+          <p>
+            고객센터로 가시려면<a href="uniFaq"> &lt;이곳&gt; </a>을 눌러주세요.
+          </p>
+        </div>
+      </article>
+      {% endblock %}
+    </div>
+    <footer></footer>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <title>{% block title %}Uni Alarm{% endblock %}</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header>
+    </header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <br/><br/>
+       <textarea id="chat-log" cols="100" rows="20"></textarea><br/>
+      {% endblock %}
+    </div>
+  </body>
+    <script type="text/javascript">
+	    username='{{ username }}';
+	    memNo = '{{memNo}}';
+	    var alarmSocket = new WebSocket(
+	               //`ws://${window.location.host}/ws/uniAlarm?${username}`
+	            `ws://${window.location.host}/ws/uniBase`
+	           );
+	    alarmSocket.onmessage = function(e) {
+	        console.log(e);
+	        var data = JSON.parse(e.data);
+	        var message = data['message'];
+	        console.log("send : "+message)
+	        
+	        confirm(message);
+	       	document.getElementById('chat-log').innerText = message
+	    };
+	
+	    alarmSocket.onopen=function (e) {
+	      console.log("연결 성공");
+	    };
+	
+	    alarmSocket.onclose = function(e) {
+	        console.error('Chat socket closed unexpectedly');
+	    };
+    </script>
+</html>

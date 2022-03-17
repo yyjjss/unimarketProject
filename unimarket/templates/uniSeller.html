@@ -1,0 +1,136 @@
+{% extends 'uniBase.html' %} 
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- style css -->
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/seller.css' %}" />
+    {% endblock %}
+    <!-- script  -->
+	{% block script %}
+    <script src="{% static 'js/seller.js' %}"></script>
+    {% endblock %}
+    
+    <title>{% block title %}Uni Seller{% endblock %}</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header>
+    </header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <main>
+        <h1>판매자 프로필</h1>
+        <article>
+        <input id="sellMemNo" type="hidden" value="{{dtoMember.memNo}}">
+          <div class="icon-select">
+            <h3>
+              <label>프로필 아이콘</label>
+            </h3>
+            {% if dtoMember.proImg.url == "1" %}
+            <img src="{% static '/images/고양.jpg' %}" alt="kdb" />
+            {% elif dtoMember.proImg.url == "2" %}
+            <img src="{% static '/images/행성1.jpg' %}" alt="fod" />
+            {% else %}
+            <img src="{% static '/images/로켓.jpg' %}" alt="can" />
+            {% endif %}
+          </div>
+          <div class="user-value">
+            <div>
+              <h3>
+                <label>닉네임</label>
+              </h3>
+              <span>{{dtoMember.nickname}}</span>
+            </div>
+            <div>
+              <h3>
+                <label>지역</label>
+              </h3>
+              <span>{{dtoMember.loc}}</span>
+            </div>
+          </div>
+        </article>
+
+        <br />
+
+        <section>
+          <div class="page-header">
+            <h3>판매 내역</h3>
+          </div>
+          <input id="pagecount" type="hidden" value="{{pagecount}}">
+          <div id="sell-list" class="sell-list">
+          <button class="left-button" id="lBtn">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <div class="sell-nav">
+          <nav id="navFor" class="list-group">
+          {% for sellList in dtoItem %}
+          	<a href="uniDetail?itemNo={{sellList.itemNo}}" class="list-group-item">
+              <div class="seller-image-box">
+                <div class="seller-img">
+                {% if sellList.itemImg %}
+                  <img src="{{sellList.itemImg.url}}" alt="상품이미지" />
+                {% else %}
+                  <img src="{% static '/images/market_logo_cut.png' %}" alt="" />
+                {% endif %}
+                </div>
+              </div>
+              <div class="seller-value">
+                <h4>{{sellList.title}}
+                {% if sellList.sellStat == 0 %}
+                &nbsp;&nbsp;<span class="badge">판매중</span>
+                {% else %}
+                &nbsp;&nbsp;<span class="badge">판매완료</span>
+                {% endif %}
+                </h4>
+                {{sellList.price}}
+                <span>원</span>
+              </div>
+            </a>
+          {% endfor %}
+          </nav>
+          <div id="pageFor" style="text-align: center; padding:3%">
+          <input id="pageNum" type="hidden" value="{{pageNum}}">
+          	{% if startpage > 1  %}
+          		<a href="javascript:void(0);" onclick="pageBlock({{pages.1}},0)"><span class="pageFont">···</span></a>&nbsp;&nbsp;
+          	{% endif %}
+          	{% for page in pages %}
+	          	{% if page == pageNum %}
+					<span class="pageFont"><b>{{page}}</b></span>&nbsp;&nbsp;
+				{% else%}
+					<a id="pageA" href="javascript:void(0);" onclick="pageBlock(this,2)"><span class="pageFont">{{page}}</span></a>&nbsp;&nbsp;
+	          	{% endif %}
+          	{% endfor %}
+          	{% if endpage < pagecount %}
+	          <a href="javascript:void(0);" onclick="pageBlock({{pages.1}},1)"><span class="pageFont">···</span></a>
+	        {% endif %}
+          </div>
+          </div>
+      	  <button class="right-button" id="rBtn">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+          </div>
+        </section>
+      	<br/>		
+      	
+      
+      <br/>
+      </main>
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer>
+    </footer>
+    <!-----------------end---------------------------->
+    
+    <!-- Bootstrap JS -->
+
+  </body>
+</html>

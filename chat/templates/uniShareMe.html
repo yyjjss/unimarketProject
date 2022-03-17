@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<html>
+<head>
+    <title>ShareMe</title>
+</head>
+<body>
+<div><button id="btn">PostingW</button></div>
+
+<script>
+    var btn=document.getElementById('btn');
+    var username='{{username|escapejs}}';
+    console.log(username);
+    var memNo='{{memNo}}';
+    var event = "test"
+   	/* var alarmSocket = new WebSocket(
+               //`ws://${window.location.host}/ws/uniBase`
+   			`ws://${window.location.host}/ws/uniAlarm?${username}`
+           );
+    alarmSocket.onmessage = function(e) {
+    	alert("onmessage");
+        var data = JSON.parse(e.data);
+        var message = data['message'];
+        console.log(message)
+        if(memNo == data['otherMemNo']){ }
+        	console.log("send : "+message)
+	        confirm(message);
+       
+    };
+    alarmSocket.onopen=function (e) {
+      console.log("연결 성공"+memNo);
+    };
+
+    alarmSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    }; */
+   	var alarmSocket = new WebSocket(
+               //`ws://${window.location.host}/ws/uniAlarm?${memNo}`
+            `ws://${window.location.host}/ws/uniBase`
+           );
+    alarmSocket.onmessage = (e) => {
+    	var data = JSON.parse(e.data);
+    }
+    alarmSocket.onclose = (e) => {
+        console.error('alarm socket closed unexpectedly');
+    };
+    
+    document.querySelector("#btn").addEventListener("click", (e) => {
+    	console.log("click")
+        alarmSocket.send(JSON.stringify({
+        	'message': username+"님께서 거래확정을 신청하셨습니다.\n신청을 수락하시겠습니까?"
+        }));
+    });
+   
+        
+    	    
+    	    
+
+ 
+	</script>
+	
+</body>
+
+
+</html>

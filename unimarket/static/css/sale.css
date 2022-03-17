@@ -1,0 +1,98 @@
+@charset "utf-8";
+.container {
+  padding-top: 64px;
+}
+
+main {
+  width: 70%;
+  margin: 0 auto;
+}
+
+article {
+  margin: 10px auto;
+}
+
+.sale-title {
+  position: relative;
+}
+
+.sale-title > .sale-backpage {
+  font-size: 36px;
+  position: absolute;
+  left: 0;
+  top: 10%;
+  background: none;
+  border: none;
+}
+
+h1 {
+  text-align: center;
+}
+
+section {
+  margin: 12px 8px;
+}
+
+section .sale-list {
+  width: 100%;
+  position: relative;
+}
+
+section .sale-list > a {
+  display: flex;
+  justify-content: left;
+}
+
+section .sale-list .sale-image-box {
+  width: 180px;
+  height: 160px;
+  margin: 0 10px;
+}
+
+section .sale-list .sale-image-box .sale-img {
+  display: flex;
+  justify-content: center;
+}
+
+section .sale-list img {
+  width: 160px;
+  height: 160px;
+}
+
+.sale-list > div.sale-icon {
+  position: absolute;
+  bottom: 21px;
+  right: 10px;
+}
+
+.sale-end > button {
+  cursor: not-allowed;
+}
+
+.sale-icon button:first-child {
+	background: #ab7fe7;
+	border: 1px solid #ab7fe7;
+	border-radius: 2px;
+}
+
+.sale-icon button:first-child:disabled {
+	background: #d0c2e8;
+	border: 1px solid #d0c2e8;
+}
+
+.sale-icon button:last-child {
+	background: #dedada;
+	border: 1px solid #dedada;
+	border-radius: 2px;
+}
+
+.page-index {
+	text-align: center;
+}
+
+/* ----------------------------media width 540 이하일떄 ----------------------------- */
+@media (max-width: 540px){
+	section .sale-list {
+	    height: 220px;
+	}
+}

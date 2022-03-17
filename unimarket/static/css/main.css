@@ -1,0 +1,220 @@
+@charset "utf-8";
+
+.container {
+  padding-top: 50vw;
+}
+
+main {
+  width: 90%;
+  margin: 0 auto;
+  display:flex;
+  flex-direction: column;
+}
+
+/* 신규상품, 추천상품 > 제목 */
+main h3 {
+	margin: 26px auto;
+}
+/* -----------이벤트 배너 ----------------- */
+#carousel-example-generic {
+  width: 100vw;
+  height: 50vw;
+  margin: auto;
+  position: absolute;
+  top: 109px;
+  left: 0;
+}
+
+.carousel-inner {
+	height: 100%;
+}
+
+.carousel-inner .item{
+	height : 100%;
+}
+
+.carousel-inner>.item>a>img {
+	width: 100%;
+  	height: 100%;
+}
+
+
+#carousel-example-generic span {
+  font-size: 50px;
+}
+
+#carousel-example-generic a {
+	background: none;
+}
+/* ------------ 추천상품 -------------------  */
+.main-recent {
+  margin-top: 30px;
+  position: relative;
+}
+
+.recent-list {
+	width: inherit;
+    height: 310px;
+    display: flex;
+    justify-content: space-around;
+    overflow: hidden;
+    flex-wrap: wrap;
+}
+
+.recent-goods {
+    width: 244px;
+    height: 310px;
+    margin: auto;
+    border: 1px solid rgb(238, 238, 238);
+    border-radius: 3px;
+}
+
+.recent-goods img {
+    width: 100%;
+    height: 220px;
+}
+
+.recent-goods .goods-summary{
+	padding: 14px;
+}
+
+.recent-goods h6 {
+  	font-size: 16px;
+    margin-top: 0;
+    padding-bottom: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ------------최신 상품-------------- */
+.main-newest{
+  margin-top: 30px;
+  position: relative;
+}
+
+.newest-list {
+ 	width: inherit;
+    height: 310px;
+    display: flex;
+    justify-content: space-around;
+    overflow: hidden;
+    flex-wrap: wrap;
+}
+
+.newest-goods {
+    width: 244px;
+    height: 310px;
+    margin: auto;
+    border: 1px solid rgb(238, 238, 238);
+    border-radius: 3px;
+}
+
+.newest-goods img {
+    width: 100%;
+    height: 220px;
+}
+
+.newest-goods .goods-summary{
+	padding: 14px;
+}
+
+.newest-goods h6 {
+  	font-size: 16px;
+    margin-top: 0;
+    padding-bottom: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.left-button {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: -4%;
+    opacity: 0.6;
+    border: none;
+    background: none;
+}
+
+.right-button {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: -4%;
+    opacity: 0.6;
+    border: none;
+    background: none;
+}
+
+/* ------------ 팝업 디자인 ---------------- */
+
+#popup-box{
+	width: 320px;
+	display: none;
+    position: fixed;
+    background: white;
+    border: 1px solid darkgray;
+    bottom: 0;
+    right: 10vw;
+    transform: translateY(478px);
+    transition: all 1.3s
+}
+
+#popup-box #popup-reward {
+	text-align: center;
+}
+
+#popup-box a {
+	display: inline-block;
+}
+
+#popup-box a img{
+	width: 300px;
+	height: 300px;
+}
+
+#popup-box h4,
+#popup-box h5,
+#popup-box h6 {
+	font-weight: bold;
+	color: black;
+}
+
+#popup-box #popup-bottom {
+	width: 319px;
+    position: relative;
+    bottom: -1px;
+}
+
+#popup-box #popup-bottom form {
+	display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    background: darkgray;
+    height: 31px;
+    color: white;
+}
+
+#popup-box #popup-bottom form div {
+	margin-left:7px;
+}
+
+#popup-box button[type="button"] {
+	border: none;
+    height: 100%;
+    background: gray;
+    font-weight: bold;
+}
+/*-------------------- media 375px 이하일때 ---------------------*/
+@media (max-width:376px){
+	#popup-box {
+	right: 0;
+	bottom: 0;
+	}
+}

@@ -1,0 +1,114 @@
+@charset "utf-8";
+/* ------------------전체영역------------------------- */
+a:link {
+  color: #222222;
+  text-decoration: none;
+}
+a:visited {
+  color: #222222;
+  text-decoration: none;
+}
+a:hover {
+  color: #222222;
+  text-decoration: none;
+}
+a:active {
+  color: #222222;
+  text-decoration: none;
+}
+/*  */
+.container {
+  padding: 64px 0;
+}
+
+h1 {
+  text-align: center;
+}
+
+.container form {
+	width: 70vw;
+	min-width: 300px;
+	margin: 0 auto;
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+}
+
+form > div {
+	width: inherit;
+}
+
+.email_box > input {
+	width: inherit;
+  margin: 0 auto;
+}
+
+.passwd_box > input {
+	width: inherit;
+  margin: 0 auto;
+}
+
+.passwd1_box > input {
+	width: inherit;
+  margin: 0 auto;
+}
+
+.nickname_box > input {
+	width: inherit;
+  margin: 0 auto;
+}
+
+.bDate_box > input {
+	width: inherit;
+  margin: 0 auto;
+}
+
+.icon-select::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.icon-select > .icon-img {
+  float: left;
+  width: 33.33%
+  padding: 5px;
+}
+
+.icon-select > .icon-img > img {
+  max-width: 10vh;
+  height: auto;
+  border-radius: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.icon-select > .icon-img > [type=radio] {
+  position: absolute;
+  opacity: 0%;
+  border: 0px;
+  width: 10%;
+  height: 10%;
+}
+
+.icon-select > .icon-img > [type=radio]:checked + img {
+  border: 5px solid #d0c2e8;
+}
+
+.loc_fulltext > #address_kakao {
+	display:inline-block;
+	width: inherit;
+  margin: 0 auto;
+}
+
+.complete {
+  margin-top: 10px;
+  width: 70vw;
+  min-width: 300px;
+}
+
+.complete > input {
+  padding: 10px 55% 10px 45%;
+  border-radius: 0px;
+  margin: 10px;
+}

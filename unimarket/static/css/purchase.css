@@ -1,0 +1,87 @@
+@charset "utf-8";
+.container {
+  padding-top: 64px;
+}
+
+main {
+  width: 70%;
+  margin: 0 auto;
+}
+
+article {
+  margin: 10px auto;
+}
+
+.purchase-title {
+  position: relative;
+}
+
+.purchase-title > .purchase-backpage {
+  font-size: 36px;
+  position: absolute;
+  left: 0;
+  top: 10%;
+  background: none;
+  border: none;
+}
+
+h1 {
+  text-align: center;
+}
+
+section {
+  margin: 12px 8px;
+}
+
+section .purchase-list {
+  width: 100%;
+  position: relative;
+}
+
+section .purchase-list > a {
+  display: flex;
+  justify-content: left;
+}
+
+section .purchase-list .purchase-image-box {
+  width: 180px;
+  height: 160px;
+  margin: 0 10px;
+}
+
+section .purchase-list .purchase-image-box .purchase-img {
+  display: flex;
+  justify-content: center;
+}
+
+section .purchase-list img {
+  width: 160px;
+  height: 160px;
+}
+
+section button {
+	color: white;
+	background-color: #8853cf;
+	border-color: #8853cf;
+  	border-radius: 3px;
+}
+
+section button:hover {
+	background-color: #68409d;
+	border-color: #68409d;
+}
+
+section button:disabled{
+	background-color: #c3a5ed;
+	border-color: #c3a5ed;
+}
+
+.purchase-list > div.purchase-icon {
+  position: absolute;
+  bottom: 21px;
+  right: 10px;
+}
+
+.purchase-index {
+	text-align: center;
+}

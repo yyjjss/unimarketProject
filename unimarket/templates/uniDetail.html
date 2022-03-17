@@ -1,0 +1,248 @@
+{% extends 'uniBase.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- style css -->
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/detail.css' %}" />
+    {% endblock %}
+    <!-- script -->
+    {% block script %}
+    <script language="javascript">
+    $("document").ready(function () {
+    	var memNo = $("#buyMemNo").val();
+    	console.log("memNo: "+memNo)
+    	if(memNo != "None"){
+    		window.onbeforeunload = function (event) {
+	   			console.log("before");
+	   			// 떠난 시기의 stayLog를 쌓기 위한 ajax
+	   			var param={
+	    				"itemNo" : $("#itemNo").val(), 
+		    			}
+	    		$.ajax({
+	   					url : "stayLogUpdate",
+	   					type : "POST",
+	   					data : param,
+	   					dataType : "text",
+	   					success : function(data){
+	   						console.log(data);
+	   					},
+	   					error : function(request, status, error){
+	   						console.log("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
+	   						console.log("error")
+	   					}
+	    			});
+	   		}
+    	}
+    });
+    // 새로고침일 경우 stayLog를 쌓지않기 위해 새로고침의 경우 확인  
+    $(document).on("keydown", function (e) { 
+    	if(e.keyCode == 116 || e.ctrlKey == true &&(e.keyCode == 82)){
+			console.log("reload");
+			window.onbeforeunload = false;
+		}
+    });
+   /*  $(document).on("submit", "form", function(){ 
+    	console.log("form submit");
+    	window.onbeforeunload = false; 
+    });
+    $(document).on("click", "button[type=submit]", function () { 
+    	console.log("button submit");
+    	window.onbeforeunload = false;
+    }); */
+    
+
+    </script>
+    <script src="{% static 'js/recentreview.js' %}"></script>
+    <script src="{% static 'js/detail.js' %}"></script>
+    
+    {% endblock %}
+    <!-- Java script -->
+    <title>{% block title %}Uni Detail{% endblock %}</title>
+  </head>
+  <body onload="pageExit();">
+    <!------------------헤더-------------------------->
+    <header>
+    </header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <main>
+      <form name="detailForm" method="POST" action="uniChatInfo" onsubmit="return purCheck()">
+      {% csrf_token %}
+        <div class="detail-header">
+          <div class="detail-image">
+            <div class="detail-img">
+              {% if dto.itemImg %}
+              <img src="{{ dto.itemImg.url }}" alt="" />
+              {% else %}
+              <img src="{% static '/images/market_logo_cut.png' %}" alt="" />
+              {% endif %}
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="section-top">
+              <div class="category-group">
+                <div class="category">
+                  <h5><strong>{{catName}}</strong></h5>
+                </div>
+                <div class="loc">
+                  <h5><strong>{{dto.loc}}</strong></h5>
+                </div>
+              </div>
+			 	<input id="zonecode" name="zonecode" type="hidden" value="{{zonecode}}">
+              <hr />
+
+              <h3><strong>{{dto.title}}</strong></h3>
+            </div>
+            <div class="section-bottom">
+              <div class="value-table">
+                <input id="hidden-price" name="price" type="hidden" value="{{dto.price}}">
+                <input type="text" id="price" readonly value="{{dto.price}}">
+                {% if dto.sellStat == 1 %}
+                	<span>거래완료</span>
+                {% endif %}
+              </div>
+
+              <hr />
+
+              <div class="detail-foot">
+                <div class="detail-icons">
+                  <ul class="list-inline">
+                    <li>
+                      <i class="far fa-heart"></i>
+                      <i class="hidden fas fa-heart"></i>
+                      <span id="span-like">{{dto.likeCnt}}</span>
+                    </li>
+                    <li>
+                      <i class="fas fa-eye"></i>
+                      <span>{{dto.readCnt}}</span>
+                    </li>
+                    <li>
+                      <i class="fas fa-clock"></i>
+                      <span>{{registerDate}}</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="opponent">
+                <input id="sellMemNo" name="sellMemNo" type="hidden" value="{{dto.memNo}}">
+                {% if memNo != dto.memNo or memNo == None %}
+                	<a href="uniSeller?itemNo={{dto.itemNo}}"><span>판매자 정보</span> </a>
+                {% endif %}
+                </div>
+              </div>
+              <div class="button-icons">
+              	<input id="likeck" name="likeck" type="hidden" value="{{likeck}}">
+                <button type="button" id="btn-Like" onclick="updateLikeCnt()" value="{{dto.itemNo}}">
+                  {% if likeck == 0 or likeck == -1 %}
+                  <i id="noheart" class="far fa-heart" style="color:#EB81C1"></i>
+                  <i id="likeheart" class="fa fa-heart" style="color:#EB81C1; display:none;"></i>
+                  {% else %}
+                  <i id="likeheart" class="fa fa-heart" style="color:#EB81C1" ></i>
+                  <i id="noheart" class="far fa-heart" style="color:#EB81C1; display:none;""></i>
+                  {% endif %}
+                  <!-- <i class="hidden fas fa-heart"></i> -->
+                  찜
+                  <!-- <span>{{dto.likeCnt}}</span> -->
+                </button>
+                <input id="buyMemNo" type="hidden" value="{{memNo}}">
+                <input id="itemNo" name="itemNo" type="hidden" value="{{dto.itemNo}}">
+                <input id="reportck" name="reportck" type="hidden" value="{{reportck}}">
+                {% if reportck == 0 or reportck == -1 %}
+                <button type="button" class="reportClick" id="sirenW">
+                  <img src="{% static '/images/sirenW.png'%}" alt="신고"/> 신고하기
+                </button>
+                <button type="button" id="sirenC" style="display:none;" disabled>
+                  <img src="{% static '/images/sirenC.png'%}" alt="신고"/> 신고완료
+				</button>
+                {% else %}
+                <button disabled>
+                  <img src="{% static '/images/sirenC.png'%}" alt="신고" /> 신고완료
+                </button>
+                {% endif %}
+                  
+				<input id="recommend" name="recommend" type="hidden" value="{{recommend}}">
+				<input id="recommendck" name="recommendck" type="hidden" value="{{recommendck}}">
+	            {% if dto.sellStat == 1 %}
+	            	<button disabled>
+	            		<div> 거래마감 </div>
+	            	</button>
+	            {% else %}
+					{% if memNo != dto.memNo or memNo == None %}
+					<button class="purCk" type="submit" value="{{dto.itemNo}}">
+						<div> 거래신청 </div>
+					</button>
+					{% else %}
+					<button type="button" onclick="location.href='uniProductsedit?itemNo={{dto.itemNo}}'">
+						<div> 수정 /삭제 </div>
+					</button>
+					{% endif %}
+	            {% endif %}  
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr />
+
+        <div class="detail-recent">
+          {% if memNo == None %}
+          <h5 class="">추천상품</h5>
+          {% else %}
+          <h5 class="">우리동네 추천상품</h5>
+          {% endif %}
+          <!-- 총 8개 후보 -->
+          {% if dtoRecmd == None %}
+          	<h3>해당 카테고리의 추천상품이 아직 준비되어있지 않습니다. </h3>
+          {% else %}
+          <div class="recent-list">
+          	{% for dtoReC in dtoRecmd %}
+	            <div class="recent-goods clearfix">
+	              <a href="uniDetail?itemNo={{dtoReC.itemNo}}&recmd=1">
+	                {% if dtoReC.itemImg %}
+                   <img src="{{ dtoReC.itemImg.url }}" alt="" />
+                  {% else %}
+                  <img src="{% static '/images/market_logo_cut.png' %}" alt="" />
+                  {% endif %}
+	                <h6>{{dtoReC.title}}</h6>
+	                <span class="glyphicon glyphicon-eye-open"> {{dtoReC.readCnt}}views</span>
+	                <strong class="pull-right">{{dtoReC.price}}</strong>
+	              </a>
+	            </div>
+           {% endfor %}
+          </div>
+          <button type="button" class="left-button">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button type="button" class="right-button">
+            <i class="fas fa-chevron-right"></i>
+          </button> 
+          {% endif %}
+        </div>
+
+        <br />
+
+        <div class="detail-article">
+          <h4>상품설명</h4>
+          <hr />
+          <div class="explanation">
+           {{dto.info}}
+          </div>
+        </div>
+        </form>
+      </main>
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer>
+    </footer>
+    <!-----------------end---------------------------->
+	
+  </body>
+</html>

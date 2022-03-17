@@ -1,0 +1,89 @@
+@charset "utf-8";
+
+/* section-guidance */
+.section-guidance {
+  width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-guidance .delete {
+  padding: 5px 12px 0 12px;
+  position: absolute;
+  right: 80px;
+}
+
+section {
+    margin-top: 30px;
+    width: inherit;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.category-goods {
+    width: 244px;
+    height: 310px;
+    margin: 10px;
+    border: 1px solid rgb(238, 238, 238);
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.category-goods img {
+    width: 100%;
+    height: 220px;
+}
+.category-goods img::after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
+}
+
+.category-goods h6 {
+    font-size: 16px;
+    margin: 14px;
+    padding-bottom: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+
+.category-goods span{
+	margin-left: 14px;
+}
+
+.category-goods strong{
+	margin-right: 14px;
+}
+
+h3 {
+	font-size: 30px
+}
+
+/* ---------------------페이지 인덱스 ---------------- */
+.page-index {
+	margin: 20px;
+	text-align: center;
+}
+
+.page-index a {
+	color: #818181;
+}
+
+.page-index b {
+	color: black;
+}
+/* ----------------------------media width 426 이하일떄 ----------------------------- */
+@media (max-width: 426px){
+	.section-guidance {
+		flex-direction: column;
+	}
+	.section-guidance .delete {
+		position: initial;
+		margin: 10px;
+	}
+}

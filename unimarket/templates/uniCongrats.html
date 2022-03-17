@@ -1,0 +1,89 @@
+{% extends 'uniBase.html' %} 
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- reset -->
+    <link rel="stylesheet" href="{% static '/setting/css/reset.css' %}" />
+    <!-- Bootstrap CSS -->
+    <link href="{% static '/setting/css/bootstrap.min.css' %}" rel="stylesheet" media="screen" />
+    <!-- font css -->
+    <script src="https://use.fontawesome.com/e3c0fc771e.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+      integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+      crossorigin="anonymous"
+    />
+    <!-- 반응형 웹 설정 -->
+    <link rel="stylesheet" href="{% static '/setting/css/ie10.css' %}" />
+    <script rel="stylesheet" href="{% static '/setting/js/ie10.js' %}"></script>
+    <!-- Default js -->
+    <script type="text/javascript" src="{% static '/setting/js/html5shiv.js' %}"></script>
+    <script type="text/javascript" src="{% static '/setting/js/respond.min.js' %}"></script>
+
+    <!-- style css -->
+    <link rel="stylesheet" href="{% static '/css/common.css' %}" />
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/congrats.css' %}" />
+    {% endblock %}
+    <!-- chat -->
+
+    <!-- Java script -->
+    <script src="{% static '/setting/js/jquery-3.6.0.min.js' %}"></script>
+    <script>
+      $.ajaxSetup({
+        headers: { "X-CSRFToken": "{{csrf_token}}" },
+      });
+    </script>
+    <script src="{%static '/js/base.js'%}"></script>
+    <title>{% block title %}Uni Congrats{% endblock %}</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header>
+    </header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <main>
+        <span>{{dto.email}}님의 유니마켓 가입이 완료되었습니다." </span>
+        <br />
+        <span> 아래 '홈으로' 버튼을 클릭하여 로그인을 진행해주십시오. </span>
+        <br />
+        <button type="button" class="btn btn-primary">
+          <a href="uniMain"> 홈으로 </a>
+        </button>
+      </main>
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer>
+      {% block footer %}
+      <div class="footer_inner">
+        <ol class="notice breadcrumb">
+          <li><a href="#">공지사항</a></li>
+          <li><a href="#">고객센터</a></li>
+          <li><a href="#">이벤트</a></li>
+        </ol>
+      </div>
+
+      <address>
+        <div>
+          <strong>본 웹사이트는 포트폴리오 제출용도로 제작되었습니다.</strong>
+        </div>
+      </address>
+      {% endblock %}
+    </footer>
+    <!-----------------end---------------------------->
+
+    <!-- Bootstrap JS -->
+
+    <script src="{% static '/setting/js/bootstrap.min.js' %}"></script>
+  </body>
+</html>

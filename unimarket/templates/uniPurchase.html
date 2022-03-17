@@ -1,0 +1,144 @@
+{% extends 'uniBase.html' %} {% load static %} {% load mathfilters %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- reset -->
+    <link rel="stylesheet" href="{% static '/setting/css/reset.css' %}" />
+    <!-- Bootstrap CSS -->
+    <link
+      href="{% static '/setting/css/bootstrap.min.css' %}"
+      rel="stylesheet"
+      media="screen"
+    />
+    <!-- font css -->
+    <script src="https://use.fontawesome.com/e3c0fc771e.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+      integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+      crossorigin="anonymous"
+    />
+    <!-- 반응형 웹 설정 -->
+    <link rel="stylesheet" href="{% static '/setting/css/ie10.css' %}" />
+    <script rel="stylesheet" href="{% static '/setting/js/ie10.js' %}"></script>
+    <!-- Default js -->
+    <script
+      type="text/javascript"
+      src="{% static '/setting/js/html5shiv.js' %}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{% static '/setting/js/respond.min.js' %}"
+    ></script>
+
+    <!-- style css -->
+    <link rel="stylesheet" href="{% static '/css/common.css' %}" />
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/purchase.css' %}" />
+    {% endblock %}
+    <!-- chat -->
+
+    <!-- Java script -->
+    <script src="{% static '/setting/js/jquery-3.6.0.min.js' %}"></script>
+    <script>
+      $.ajaxSetup({
+        headers: { "X-CSRFToken": "{{csrf_token}}" },
+      });
+    </script>
+    <script src="{%static '/js/base.js'%}"></script>
+    <title>{% block title %}Uni Purchase{% endblock %}</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header></header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <main>
+        <article>
+          <div class="purchase-title">
+            <button
+              class="purchase-backpage"
+              onclick="location.href='uniMypage'"
+            >
+              <!--  마이페이지 뒤로 가는 링크  -->
+              <i class="fas fa-arrow-circle-left"></i>
+            </button>
+            <h1><strong>구매 목록</strong></h1>
+          </div>
+          <hr />
+          <section>
+            {% for dto in dtos %}
+            <div class="purchase-list">
+              <!--  디테일 상품 링크 이어주깅  -->
+              <a href="uniDetail?itemNo={{dto.itemNo}}">
+                <div class="purchase-image-box">
+                  <div class="purchase-img">
+                    {% if dto.itemImg %}
+                    <img src="{{ dto.itemImg.url }}" alt="" />
+                    {% else %}
+                    <img
+                      src="{% static '/images/market_logo_cut.png' %}"
+                      alt=""
+                    />
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="purchase-value">
+                  <h4>{{ dto.title }}</h4>
+
+                  <span>{{dto.price}}원</span>
+                </div>
+              </a>
+              <div class="purchase-icon">
+                {% if dto.reviewed == 0 %}
+                <button
+                  class="doreview"
+                  value="{{dto.itemNo}}"
+                  onclick="window.open('uniReview?itemNo={{dto.itemNo}}', 'uniReview', 'width=500, height=550')"
+                >
+                  리뷰하기
+                </button>
+                {% else %}
+                <button class="doreview" value="{{dto.itemNo}}" disabled>
+                  리뷰완료
+                </button>
+                {% endif %}
+              </div>
+              <hr />
+            </div>
+            {% endfor %}
+          </section>
+          <br />
+          <div class="page-index">
+            {% if startpage > pageblock %}
+            <a href="uniPurchase?page={{startpage|sub:pageblock}}">[◀]</a>
+            {% endif %} {% for p in pages %} {% if p == page %}
+            <b>{{p}}</b>
+            {% endif %} {% if p != page %}
+            <a href="uniPurchase?page={{p}}">{{p}}</a>
+            {% endif %} {% endfor %} {% if endpage < pagecount %}
+            <a href="uniPurchase?page={{startpage|add:pageblock}}">[▶]</a>
+            {% endif %}
+          </div>
+        </article>
+      </main>
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer></footer>
+    <!-----------------end---------------------------->
+
+    <!-- Bootstrap JS -->
+
+    <script src="{% static '/setting/js/bootstrap.min.js' %}"></script>
+  </body>
+</html>

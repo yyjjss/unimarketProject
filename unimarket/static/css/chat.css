@@ -1,0 +1,175 @@
+@charset "utf-8";
+
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  width: 750px;
+  height: 894px;
+  padding: 64px 0 0 0;
+  background: #cecfe3;
+}
+
+.container h4,
+.container h5 {
+  margin-top: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-box {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+aside {
+  width: 260px;
+  height: 800px;
+  background: rgb(214, 221, 199);
+}
+
+aside .chat-search-home {
+  width: 260px;
+  height: 110px;
+  padding: 30px 20px;
+}
+
+aside .chat-search {
+  width: 210px;
+  height: 50px;
+  padding: 10px 0 10px 10px;
+  display: flex;
+  justify-content: center;
+  background: black;
+}
+
+aside .chat-search input {
+  width: 100%;
+  height: 100%;
+}
+
+aside .chat-search button {
+  outline: hidden;
+  border: none;
+  background: black;
+  color: white;
+}
+
+aside ul {
+  width: 260px;
+  height: 690px;
+  padding-left: 10px;
+  overflow-y: scroll;
+}
+
+aside ul > li {
+  width: 180px;
+  display: flex;
+  justify-content: left;
+}
+
+aside ul > li img {
+  width: 55px;
+  height: 55px;
+}
+
+/* ------------ main ------------ */
+main {
+  width: 490px;
+  height: 800px;
+}
+
+main > .chat-header {
+  padding: 30px 20px 30px 40px;
+  border-bottom: 1px solid white;
+  display: flex;
+  justify-content: left;
+}
+
+.chat-header img {
+  width: 55px;
+  height: 55px;
+}
+
+main ul.chat {
+  height: 520px;
+  border-bottom: 1px solid white;
+  overflow-y: scroll;
+}
+
+.you {
+  padding: 5px 5px;
+  display: flex;
+  justify-content: left;
+}
+.your-img > img {
+  width: 55px;
+  height: 55px;
+}
+
+.me {
+  padding: 5px 5px;
+  display: flex;
+  justify-content: right;
+}
+
+.me-img > img {
+  width: 55px;
+  height: 55px;
+}
+
+.me h6 {
+  text-align: right;
+}
+
+.me div.message {
+  margin-right: 30px;
+}
+.chat h6 {
+  margin-top: 0;
+}
+
+.entente {
+  margin-left: 10px;
+}
+.message {
+  min-width: 50px;
+  max-width: 300px;
+  word-wrap: break-word;
+}
+
+/* chat-foot */
+.chat-foot {
+  height: auto;
+  position: relative;
+  padding: 0 10px;
+}
+
+.chat-foot textarea {
+  width: 100%;
+  height: 100px;
+  resize: none;
+}
+
+.chat-foot button {
+  border: none;
+  background: none;
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+}
+
+.chat-foot input[type="button"] {
+  	position: absolute;
+	bottom: 10px;
+    right: 60px;
+}
+.chat-foot input[type="submit"] {
+  	position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+}

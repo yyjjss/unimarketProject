@@ -1,0 +1,39 @@
+@charset "utf-8";
+
+.container {
+  width: 500px;
+  height: 600px;
+}
+
+h2 {
+  text-align: center;
+}
+
+.container > table > tbody > tr> th {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.report-text > textarea {
+  width: 400px;
+  height: 200px;
+  resize: none;
+}
+
+.review-select {
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+}
+
+.inputbutton[type="submit"] {
+  width: 58px;
+  height: 34px;
+  color: white;
+  padding: 6px 12px;
+  background: #6667ab;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 0 5px;
+}

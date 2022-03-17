@@ -1,0 +1,31 @@
+@charset "utf-8";
+
+main {
+    max-width: 640px;
+    margin: 30px auto;
+    padding-top: 60px;
+}
+
+/* header */
+
+.header {
+  margin-bottom: 70px;
+}
+
+.header > .title > span {
+  font-weight: 600;
+  color: #6667ab;
+}
+
+.header > .title > h1 {
+  margin-top: 10px;
+}
+
+.header > span {
+  color: rgb(102, 102, 102);
+}
+
+main > .summary {
+  font-size: 17px;
+  word-wrap: break-word;
+}

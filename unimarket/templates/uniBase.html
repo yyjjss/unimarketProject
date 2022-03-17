@@ -1,0 +1,462 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- reset -->
+    <link rel="stylesheet" href="{% static '/setting/css/reset.css' %}" />
+    
+    <!-- Bootstrap CSS -->
+    <link href="{% static '/setting/css/bootstrap.min.css' %}" rel="stylesheet" media="screen" />
+    
+    <!-- font css -->
+    <script src="https://use.fontawesome.com/e3c0fc771e.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" 
+      integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+      crossorigin="anonymous"
+    />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+    
+    <!-- 반응형 웹 설정 -->
+    <link rel="stylesheet" href="{% static '/setting/css/ie10.css' %}" />
+    <script rel="stylesheet" href="{% static '/setting/js/ie10.js' %}"></script>
+    <!-- Default js -->
+    <script type="text/javascript" src="{% static '/setting/js/html5shiv.js' %}"></script>
+    <script type="text/javascript" src="{% static '/setting/js/respond.min.js' %}"></script>
+	
+	<!-- style css -->
+    <link rel="stylesheet" href="{% static '/css/common.css' %}" />
+    {% block css %}
+    {% endblock %}
+	
+	<!-- Java script -->
+   	<script src="{% static '/setting/js/jquery-3.6.0.min.js' %}"></script>
+    <script>
+      $.ajaxSetup({
+        headers: { "X-CSRFToken": "{{csrf_token}}" },
+      });
+    </script> 
+    <script src="{% static 'js/base.js' %}"></script>
+    <script src="{% static 'js/allAlarm.js' %}"></script>
+    {% block script %}
+    {% endblock %}
+    
+    <!-- chat -->
+
+    
+    
+    <title>{% block title %}UniMarket{% endblock %}</title>
+  </head>
+  <body>
+  <!------------------헤더-------------------------->
+  <div>
+		<ul class="nav_title">
+          <a class="list-inline" href="/unimarket/uniMain">
+            <!---------- 로그인전 ------------->
+            
+            <li>
+              <img class="" src="{% static '/images/market_logo_cut.png' %}" alt="로고" />
+            </li>
+            <!------------- end -------------->
+            <li><img class="" src="{% static '/images/lemonjelly.png' %}" alt="로고" style="width:250px; height:40px"/></li>
+          </a>
+        </ul>
+		</div>
+    <header>
+	{% block header %}
+		
+      <div class="nav_bar">
+        <div class="nav_category">
+          <img src="{% static '/images/category_icon.png' %}" alt="카테고리아이콘" />
+        </div>
+        <!-- 검색 탭 -->
+        <div class="search-box">
+            <div class="search">
+              <button class="filter">
+              	<i class="fa fa-filter" aria-hidden="true"></i>
+              </button>
+              <form method="get" action="uniCategory">
+                <input type="text" name="kwrd" placeholder="검색어를 입력해주세요" />
+                <button class="btn btn" type="submit">
+                  <span class="glyphicon glyphicon-search"></span>
+                </button>
+                <!-- 검색필터기능 모달창 -->
+			<div id="myReward" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myRewardLabel" aria-hidden="true">
+		        <div class="modal-dialog">
+		          <!-- 알람내용 -->
+		          <div class="modal-content">
+		            <!-- 내용 -->
+		            <div class="modal-body">
+		              <nav class="reward-box">
+						<div>              
+			            	<label for="제목">제목
+			            		<input type="radio" id="제목" name="reward" value="제목" checked>
+			            	</label>
+			            </div>
+			            <div>
+			            	<label for="제목+내용">제목+내용
+			            		<input type="radio" id="제목+내용" name="reward" value="제목+내용">
+			            	</label>
+			            </div>
+			            <div>
+			            	<label for="판매자 닉네임">판매자 닉네임
+			            		<input type="radio" id="판매자 닉네임" name="reward" value="판매자 닉네임">
+			            	</label>
+			            </div>
+		              </nav>
+		            </div>
+		          </div>
+		        </div>
+		      </div>
+		      <div id="myCat" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myCatLabel" aria-hidden="true">
+		        <div class="modal-dialog">
+		          <!-- 알람내용 -->
+		          <div class="modal-content">
+		            <!-- 내용 -->
+		            <div class="modal-body" >
+		              <nav class="cat-box">
+		              	<div>              
+			            	<label for="category0">전체
+			            		<input type="radio" id="category0" name="cat_filter" value="전체" checked>
+			            	</label>
+			            </div>
+						<div>              
+			            	<label for="category1">디지털기기
+			            		<input type="radio" id="category1" name="cat_filter" value="디지털기기">
+			            	</label>
+			            </div>
+			            <div>
+			            	<label for="category2">생활가전
+			            		<input type="radio" id="category2" name="cat_filter" value="생활가전">
+			            	</label>
+			            </div>
+			            <div>
+			            	<label for="category3">가구/인테리어
+			            		<input type="radio" id="category3" name="cat_filter" value="가구/인테리어">
+			            	</label>
+			            </div>
+			            <div>
+			            	<label for="category4">생활/가공식품
+			            	<input type="radio" id="category4" name="cat_filter" value="생활/가공식품">
+			            	</label>
+			            </div>
+			            <div>
+			            	<label for="category5">여성패션/잡화
+			            	<input type="radio" id="category5" name="cat_filter" value="여성패션/잡화">	
+			            	</label>	            	
+			            </div>
+			            <div>
+			            	
+			            	<label for="category6">남성패션/잡화
+			            	<input type="radio" id="category6" name="cat_filter" value="남성패션/잡화">
+			            	</label>
+			            </div>
+			            <div>
+			            	
+			            	<label for="category7">유아동
+			            	<input type="radio" id="category7" name="cat_filter" value="유아동">
+			            	</label>
+			            </div>
+			            <div>
+			            	<label for="category8">뷰티/미용
+			            	<input type="radio" id="category8" name="cat_filter" value="뷰티/미용">
+			            	</label>
+			            </div>
+			            <div>
+			            	<label for="category9">스포츠/레저
+			            	<input type="radio" id="category9" name="cat_filter" value="스포츠/레저">
+			            	</label>
+			            </div>
+			            <div>
+			            	<label for="category10">게임/취미
+			            	<input type="radio" id="category10" name="cat_filter" value="게임/취미">
+			            	</label>
+			            </div>
+			            <div>
+			            	<label for="category11">도서/티켓/음반
+			            	<input type="radio" id="category11" name="cat_filter" value="도서/티켓/음반">
+			            	</label>
+			            </div>
+			            <div>
+			            	<label for="category12">반려동물
+			            	<input type="radio" id="category12" name="cat_filter" value="반려동물">
+			            	</label>
+			            </div>
+			            <div>
+			            	<label for="category13">식물
+			            	<input type="radio" id="category13" name="cat_filter" value="식물">
+			            	</label>
+			            </div>
+			            <div>
+			            	<label for="category14">기타
+			            	<input type="radio" id="category14" name="cat_filter" value="기타">
+			            	</label>
+			            </div>
+		              </nav>
+		            </div>
+		          </div>
+		        </div>
+		      </div>
+              </form>
+              <div class="filter-tab">
+              	<div class="filter-tab-inner">
+	              	<a href="#myReward" class="reward" data-toggle="modal">
+	              		<span> 제목 </span>
+	              		<i class="fa fa-caret-down" aria-hidden="true"></i>
+	           		</a>
+	           		<a href="#myCat" class="cat_filter" data-toggle="modal">
+	              		<span> 전체 </span>
+	              		<i class="fa fa-caret-down" aria-hidden="true"></i>
+	           		</a>
+	           	</div>
+              </div>
+              <div id="searchCP_box">
+              	<div id="searchCP">
+              	</div>
+              </div>
+            </div>
+        </div>
+            
+        {% if memNo == None %}
+        
+        <div class="nav_user">
+          <a href="uniLogin">
+            <strong class=""> LOGIN </strong>
+          </a>
+        </div>
+            <!-- 검색 탭 로드버튼 -->
+            
+            
+           <!-- 알림 -->
+          
+      </div>
+        {% endif %}
+        {% if memNo != None %}
+        
+        <div class="nav_user">
+          <!-- 알림 -->
+            <a href="#myModal" class="icon btn btn-primary" data-toggle="modal">
+              <span id="Alcount" class="glyphicon-envelope"></span> <span class="badge badge-primary"></span>
+            </a>
+        	<div class="profile">
+              <img class="" src="{% static '/images/market_logo_cut.png' %}" alt="프로필" />
+            </div>
+            
+        </div>
+            <!-- 검색 탭 로드버튼 -->
+            
+
+      </div>
+      <!-- 알람창 -->
+      <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <!-- 알람내용 -->
+          <div class="modal-content">
+            <!-- 제목 -->
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel">알람</h4>
+            </div>
+            <!-- 내용 -->
+            <div class="modal-body">
+              <nav class="alarm-box list-group">
+            	<div class="list-group-item"> 새로운 공지 OO건 </div>
+	            <div class="list-group-item"> 새로운 이벤트 OO건 </div>
+	            <div class="list-group-item"> 읽지 않은 채팅 OO건 </div>
+	            <div class="list-group-item"> 상품 신고 OO건 </div>
+				<div class="list-group-item"> 등록 후 일주일 경과 상품 OO건 </div>
+				<div class="list-group-item"> 새로운 알람 내용이 없습니다. </div>
+              </nav>
+            </div>
+            <div class="modal-footer">
+              <a href="uniAlarm" class="btn btn-primary">알림 페이지 </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!----------------사이드 버튼  ------------------------->
+	    <div class="side_bar">
+		    <a href="uniDibs" class="btn">찜</a>
+		    <a href="uniPurchase" class="btn">구매목록</a>
+		    <button id="side_open" type="button">
+		    	<i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+		    </button>
+	    </div>
+	    <!----------------사이드 탭---------------------------->
+	    <div class="side_tab">
+	    	<div class="side_top">
+	    		<button id="side_close" type="button">
+	    			<i class="fa fa-times" aria-hidden="true"></i>
+	    		</button>
+	    		<a href="uniDibs" class="btn">찜</a>
+	    		<a href="uniPurchase" class="btn">구매목록</a>
+	    	</div>
+	    	<div class="side_notice">
+	    		<h3>[구매자]님을 위한</h3>
+	    		<h3>상품 다시보기</h3>
+	    		<br>
+	    		<h3>최근에 오래 고민하신 상품만 모아봤어요!</h3>
+	    	</div>
+	    	<div class="side_reward">
+	    	<!-- 제품정보 (반복문 4개) -->
+	    		{% for sideItem in sideItems %}
+	    		<a href="uniDetail?itemNo={{sideItem.itemNo}}">
+	    			<div>
+              {% if sideItem.itemImg %}
+              <img src="{{ sideItem.itemImg.url }}" alt="추천이미지" />
+              {% else %}
+              <img
+                src="{% static '/images/market_logo_cut.png' %}"
+              />
+              {% endif %}
+	    			</div>
+	    			<div class="side_summary">
+	                  <h6>{{sideItem.title}}</h6>
+	                  <i class="fas fa-clock">{{sideItem.registerDate}}</i>
+	                  <strong class="pull-right">{{sideItem.price}}원</strong>
+                  </div>
+	    		</a>
+	    		{% endfor %}
+	    	</div>
+	    </div>
+        {% endif %}
+        
+      <div class="category_list_home">
+        <div class="hidden category_list">
+          <a href="uniCategory?cat=cat01">
+            <div class="list_icon_group">
+              <i class="fas fa-desktop"></i>
+              <h6> 디지털기기</h6>
+            </div>
+          </a>
+          <a href="uniCategory?cat=cat02">
+            <div class="list_icon_group">
+              <i class="fas fa-blender"></i>
+              <h6> 생활가전</h6>
+            </div>
+          </a>
+          <a href="uniCategory?cat=cat03">
+            <div class="list_icon_group">
+              <i class="fas fa-couch"></i>
+              <h6> 가구/인테리어</h6>
+            </div>
+          </a>
+          <a href="uniCategory?cat=cat04">
+            <div class="list_icon_group">
+              <i class="fas fa-cookie"></i>
+              <h6> 생활/가공식품</h6>
+            </div>
+          </a>
+          <a href="uniCategory?cat=cat05">
+            <div class="list_icon_group">
+              <i class="fas fa-female"></i>
+              <h6> 여성패션/잡화</h6>
+            </div>
+          </a>
+          <a href="uniCategory?cat=cat06">
+            <div class="list_icon_group">
+              <i class="fas fa-male"></i>
+              <h6> 남성패션/잡화</h6>
+            </div>
+          </a>
+          <a href="uniCategory?cat=cat07">
+            <div class="list_icon_group">
+              <i class="fas fa-baby-carriage"></i>
+              <h6> 유아동</h6>
+            </div>
+          </a>
+          <a href="uniCategory?cat=cat08">
+            <div class="list_icon_group">
+              <i class="fas fa-magic"></i>
+              <h6> 뷰티/미용</h6>
+            </div>
+          </a>
+          <a href="uniCategory?cat=cat09">
+            <div class="list_icon_group">
+              <i class="fas fa-basketball-ball"></i>
+              <h6> 스포츠/레저</h6>
+            </div>
+          </a>
+          <a href="uniCategory?cat=cat10">
+            <div class="list_icon_group">
+              <i class="fas fa-gamepad"></i>
+              <h6> 게임/취미</h6>
+            </div>
+          </a>
+          <a href="uniCategory?cat=cat11">
+            <div class="list_icon_group">
+              <i class="fas fa-book"></i>
+              <h6> 도서/티켓/음반</h6>
+            </div>
+          </a>
+          <a href="uniCategory?cat=cat12">
+            <div class="list_icon_group">
+              <i class="fas fa-paw"></i>
+              <h6> 반려동물</h6>
+            </div>
+          </a>
+          <a href="uniCategory?cat=cat13">
+            <div class="list_icon_group">
+              <i class="fas fa-seedling"></i>
+              <h6> 식물</h6>
+            </div>
+          </a>
+          <a href="uniCategory?cat=cat14">
+            <div class="list_icon_group">
+              <i class="fas fa-ellipsis-h"></i>
+              <h6> 기타</h6>
+            </div>
+          </a>
+        </div>
+      </div>
+	<div class="blackbox"></div>
+    <div class="profileTab">
+        <div class="prosection">
+          <a href="uniMypage" class="mypro"> 마이 프로필 </a>
+          <a href="uniChatRoomInfo" class="mychat"> 채팅 </a>
+          <a href="uniLogout">로그아웃</a>
+    	</div>
+    </div>
+	
+	{% endblock %}
+    </header>
+    <!------------------메인내욜--------------------------->
+    <div class="container">
+    {% block container %}
+	{% endblock %}
+	</div>
+    <!---------------- 푸터 -------------------------->
+    <footer>
+	{% block footer %}
+	  
+      <div class="footer_inner">
+        <ol class="notice breadcrumb">
+          <li><a href="uniNotice">공지사항</a></li>
+          <li><a href="uniFaq">고객센터</a></li>
+          <li><a href="uniNotice">이벤트</a></li>
+        </ol>
+      </div>
+
+      <address>
+        <div>
+          <strong>본 웹사이트는 포트폴리오 제출용도로 제작되었습니다.</strong>
+        </div>
+      </address>
+	{% endblock %}
+    </footer>
+    <!-----------------end---------------------------->
+    
+    <!-- Bootstrap JS -->
+    <script src="{% static '/setting/js/bootstrap.min.js' %}"></script>
+    {% block script2 %}{% endblock %}
+  </body>
+</html>

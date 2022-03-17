@@ -1,0 +1,81 @@
+@charset "utf-8";
+.container {
+  padding-top: 64px;
+}
+
+main {
+  width: 70%;
+  margin: 0 auto;
+}
+
+article {
+  margin: 10px auto;
+}
+
+.dibs-title {
+  position: relative;
+}
+
+.dibs-title > .dibs-backpage {
+  font-size: 36px;
+  position: absolute;
+  left: 0;
+  top: 10%;
+  background: none;
+  border: none;
+}
+
+h1 {
+  text-align: center;
+}
+
+section {
+  margin: 12px 8px;
+}
+
+section .dibs-list {
+  width: 100%;
+  position: relative;
+}
+
+section .dibs-list > a {
+  display: flex;
+  justify-content: left;
+}
+
+section .dibs-list .dibs-image-box {
+  width: 180px;
+  height: 160px;
+  margin: 0 10px;
+}
+
+section .dibs-list .dibs-image-box .dibs-img {
+  display: flex;
+  justify-content: center;
+}
+
+section .dibs-list img {
+  width: 160px;
+  height: 160px;
+}
+
+.dibs-list #Sellstat {
+	position: absolute;
+    bottom: 21px;
+    right: 70px;
+    border-radius: 2px;
+}
+
+.dibs-list #Sellstat:disabled{
+	background: #d0c2e8;
+	border: 1px solid #d0c2e8;
+}
+
+.dibs-list #btn-Like {
+  position: absolute;
+  bottom: 21px;
+  right: 10px;
+  background: white;
+  border: 1px solid darkgray;
+  border-radius: 2px;
+}

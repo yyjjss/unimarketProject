@@ -1,0 +1,290 @@
+{% extends 'uniBase.html' %} 
+{% load static %}
+{% load mathfilters %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- style css -->
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/alarm.css' %}" />
+    {% endblock %}
+    {% block script %}
+    <script>
+    $(function() {
+        $("#applyAlarm").on("click", function() {
+        	var str = this;
+        	console.log(str.toString());
+        	var cut = str.toString().split('#');
+        	// markNo[1] 마크 넘버 
+        	var markNo = cut[1]
+        	console.log(markNo+"span");
+        	var content = $("#"+markNo+"span").text()
+        	console.log(content);
+        	console.log("indexof: "+content.indexOf("]"));
+        	var cut2 = markNo.substr(2, markNo.length-1).split("_");
+        	var sellMemNo = cut2[0]
+        	var itemNo = cut2[2]
+        	var chatNo = cut2[1]
+        	var buyMemNo = '{{memNo}}'
+        	var itemTitle = content.substr(content.indexOf("["), content.indexOf("]")-2)
+       		console.log("sellMemNo: "+sellMemNo)
+           	console.log("itemNo: "+itemNo)
+           	console.log("chatNo: "+chatNo)
+        	console.log("butMemNo: "+buyMemNo)
+        	console.log("itemTitle: "+itemTitle)
+        	
+        	if(!confirm(content+"\n\n※ [확인]버튼을 클릭시 거래확정이 완료됩니다.\n※ [취소]버튼을 클릭시 거래확정이 거절됩니다.\n※ 두 버튼 중 하나라도 선택할 시 해당 알림은 삭제됩니다.\n※ 선택없이 새로고침 또는 페이지를 이동할 시 거절로 적용됩니다.")){	// 거래완료 취소에 따른 실시간 알람 
+        		console.log("refuseAlarm");
+        		var param={
+	    				"sellMemNo" : sellMemNo, 
+	    				"buyMemNo" : buyMemNo, 
+		    			"itemNo" : itemNo,
+		    			"itemTitle" : itemTitle,
+		    			"chatNo" : chatNo,
+		    			}
+        		$.ajax({
+					url : "updateCancleComplete",
+					type : "POST",
+					data : JSON.stringify(param),
+					dataType : "text",
+					success : function(data){
+						console.log(data);
+						window.location.href="uniAlarm"
+					},
+					error : function(request, status, error){
+						console.log("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
+						console.log("error")
+					}
+    			});
+        	}else{
+        		// 거래확정에 대한 데이터 저장 : item 판매유무 flg=1 
+	    		var param={
+	    				"sellMemNo" : sellMemNo, 
+		    			"buyMemNo" : buyMemNo,
+		    			"itemNo" : itemNo,
+		    			"itemTitle" : itemTitle,
+		    			"chatNo" : chatNo,
+		    			}
+	    		$.ajax({
+    					url : "updateBuyComplete",
+    					type : "POST",
+    					data : JSON.stringify(param),
+    					dataType : "text",
+    					success : function(data){
+    						console.log(data);
+    						window.location.href="uniPurchase"
+    					},
+    					error : function(request, status, error){
+    						console.log("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
+    						console.log("error")
+    					}
+	    			});
+        	}
+        });
+    });
+    </script>
+    {% endblock %}
+    <!-- Java script -->
+    <title>{% block title %}Uni Alarm{% endblock %}</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header>
+    </header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <main>
+        <article>
+          <div class="alarm-title">
+            <button class="alarm-backpage" onclick="location.href='uniMypage'">
+              <i class="fas fa-arrow-circle-left"></i>
+            </button>
+            <h1><strong>알림 내역</strong></h1>
+          </div>
+          <hr />
+          <section>
+          {% if count != 0 %}
+			{% for mark in dtoMark%}
+			<div class="alarm-list">
+				{% if mark.markStat == 0 %}
+					{% if mark.noticeStat == 0 %}
+					<a href="uniNoticetempt?noticeNo={{mark.markNo}}">
+						<div class="alarm-value">
+							<h4><b>{{mark.markContent}}
+							<span class="label label-primary">공지</span>
+							</b></h4>
+							<span>공지가 등록되었습니다.</span>
+						</div>
+					</a>
+					{% else %}
+					<a href="uniEventtempt?noticeNo={{mark.markNo}}">
+						<div class="alarm-value">
+							<h4><b>{{mark.markContent}}
+							<span class="label label-success">이벤트</span>
+							</b></h4>
+							<span>지금바로 이벤트를 확인해주세요!!</span>
+						</div>
+					</a>
+					{% endif %}
+							
+				{% elif mark.markStat == 1 %}
+				<a href="uniChatRoomInfo?chatNo={{mark.markNo}}&itemNo={{mark.itemNo}}">
+					<div class="alarm-value">
+					<h4><b>거래신청 건이 있습니다.
+					{% if mark.markRead == 0 %}
+						<span class="label label-warning">new</span>
+					{% endif %}
+					</b></h4>
+					<span>{{mark.markContent|truncatewords:10}}</span>
+					</div>
+				</a>
+				{% elif mark.markStat == 2 %}
+				<a href="uniDetail?itemNo={{mark.itemNo}}&alR={{mark.markNo}}">
+					<div class="alarm-value">
+					<h4><b>신고된 상품이 있습니다.
+					{% if mark.markRead == 0 %}
+						<span class="label label-warning">new</span>
+					{% endif %}
+					</b></h4>
+					<span>{{mark.markContent|truncatewords:10}}</span>
+					</div>
+				</a>
+				{% elif mark.markStat == 3 %}
+				<a href="uniDetail?itemNo={{mark.markNo}}&alA=1">
+					<div class="alarm-value">
+					<h4><b>게시한지 일주일이상이 지난 상품이 있습니다.
+					{% if mark.markRead == 0 %}
+						<span class="label label-warning">new</span>
+					{% endif %}
+					</b></h4>
+					<span>{{mark.markContent}}</span>
+					</div>
+				</a>
+				{% elif mark.markStat == 4 %}
+				<a href="javascript:void(0)#{{mark.markNo}}" id="applyAlarm">
+					<div class="alarm-value">
+					<h4><b>거래확정 요청 알림입니다. 
+					{% if mark.markRead == 0 %}
+						<span class="label label-warning">new</span>
+					{% endif %}
+					</b></h4>
+					<span id="{{mark.markNo}}span">{{mark.markContent}}</span><br><br>
+					※ 해당알림을 클릭할 시 거래확정 요청에 대해 [확인]/[취소=거절]를 적용할수 있습니다.<br> 
+					※ 알림을 클릭하고 난 뒤에는 선택을하지않고 새로고침을 하거나 페이지를 이동할 시 거절로 적용됩니다.<br> 
+					※ 따라서 아래 상품의 상세페이지에서 상품을  한 번더 확인하고 클릭해주세요.
+					
+				</div>
+				</a>
+				<br>
+				<a href="uniDetail?itemNo={{mark.itemNo}}" style="color:blue;">[거래확정 요청 상품확인하러가기]</a>
+				{% elif mark.markStat == 5 %}
+				<a href="uniChatRoomInfo?{{mark.itemNo}}&alC={{mark.markNo}}&index={{mark.indexNo}}">
+					<div class="alarm-value">
+					<h4><b>거래확정 신청이 거절되었습니다. 
+					{% if mark.markRead == 0 %}
+						<span class="label label-warning">new</span>
+					{% endif %}
+					</b></h4>
+					<span>{{mark.markContent}}</span>
+					</div>
+				</a>
+				{% elif mark.markStat == 6 %}
+				<a href="uniSale?alC={{mark.markNo}}">
+					<div class="alarm-value">
+					<h4><b>거래확정 요청이 확인되었습니다. 
+					{% if mark.markRead == 0 %}
+						<span class="label label-warning">new</span>
+					{% endif %}
+					</b></h4>
+					<span>{{mark.markContent}}</span>
+					</div>
+				</a>
+				{% elif mark.markStat == 7 %}
+				<a href="uniDetail?itemNo={{mark.itemNo}}&alS=1">
+					<div class="alarm-value">
+					<h4><b>찜한 상품이 판매완료되었습니다. 
+					{% if mark.markRead == 0 %}
+						<span class="label label-warning">new</span>
+					{% endif %}
+					</b></h4>
+					<span>{{mark.markContent}}</span>
+					</div>
+				</a>
+				{% elif mark.markStat == 8 %}
+				<a href="uniDetail?itemNo={{mark.itemNo}}&alU=1&index={{mark.indexNo}}">
+					<div class="alarm-value">
+					<h4><b>찜한 상품의 가격이 변동되었습니다.
+					{% if mark.markRead == 0 %}
+						<span class="label label-warning">new</span>
+					{% endif %}
+					</b></h4>
+					<span>{{mark.markContent}}</span>
+					</div>
+				</a>
+				{% endif %}
+				<hr />
+			</div>
+			{% endfor %}
+			{% if pageNum != 1 %}
+				<button class="left-button" onclick="location.href='uniAlarm?pageNum={{pageNum|sub:1}}'">
+	            <i class="fas fa-chevron-left"></i>
+	          	</button>
+	        {% else %}
+	        	<button class="left-button" disabled="disabled">
+	            <i class="fas fa-chevron-left"></i>
+	          	</button>
+	        {% endif %}  	
+          	{% if startpage > 1  %}
+          		<a href="uniAlarm?pageNum={{startpage|sub:1}}"><span class="pageFont">···</span></a>&nbsp;&nbsp;
+          	{% endif %}
+          	{% for page in pages %}
+	          	{% if page == pageNum %}
+					<span class="pageFont"><b>[{{page}}]</b></span>&nbsp;&nbsp;
+				{% else%}
+					<a id="pageA" href="uniAlarm?pageNum={{page}}"><span class="pageFont">{{page}}</span></a>&nbsp;&nbsp;
+	          	{% endif %}
+          	{% endfor %}
+          	
+          	{% if endpage < pagecount %}
+	          <a href="uniAlarm?pageNum={{endpage|add:1}}"><span class="pageFont">···</span></a>
+	        {% endif %}
+          {% if pageNum != pagecount %}
+				<button class="right-button" onclick="location.href='uniAlarm?pageNum={{pageNum|add:1}}'">
+	            <i class="fas fa-chevron-right"></i>
+	          	</button>
+	        {% else %}
+	        	<button class="right-button" disabled="disabled">
+	            <i class="fas fa-chevron-right"></i>
+	          	</button>
+	        {% endif %}  
+		{% else %}
+			<br>
+			<br>
+			<div class="alarm-list">
+				<div class="alarm-value">
+					<h4><strong>알람내역이 없습니다.</strong></h4>
+				</div>
+			</div>
+			<br>
+			<br>
+		{% endif %}
+		</section>
+        </article>
+      </main>
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer>
+    </footer>
+    <!-----------------end---------------------------->
+
+    <!-- Bootstrap JS -->
+    
+  </body>
+</html>

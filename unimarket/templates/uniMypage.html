@@ -1,0 +1,88 @@
+{% extends 'uniBase.html' %} {% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- style css -->
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/mypage.css' %}" />
+    {% endblock %}
+    <title>{% block title %}Uni Seller{% endblock %}</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header>
+    </header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <main>
+        <h1>마이 페이지</h1>
+        <article>
+          <div class="icon-select">
+			<h3>
+              <label>프로필 아이콘</label>
+            </h3>
+               {% if dtoMember.proImg.url == "1" %}
+               <img src="{% static '/images/고양.jpg' %}" alt="프로필아이콘" />
+               {% elif dtoMember.proImg.url == "2" %}
+               <img src="{% static '/images/행성1.jpg' %}" alt="프로필아이콘" />
+               {% else %}
+               <img src="{% static '/images/로켓.jpg' %}" alt="프로필아이콘" />
+               {% endif %}             
+          </div>
+          <div class="user-value">
+            <div>
+              <h3>
+                <label>이메일</label>
+              </h3>
+              <span>{{dtoMember.email}}</span>
+            </div>
+            <div>
+              <h3>
+                <label>닉네임</label>
+              </h3>
+              <span>{{dtoMember.nickname}}</span>
+            </div>
+            <div>
+              <h3>
+                <label>지역</label>
+              </h3>
+              <span>{{dtoMember.loc}}</span>
+            </div>
+            <div>
+              <h3>
+                <label>총 평점</label>
+              </h3>
+              <span>{{dtoMember.rGrade}}</span>
+            </div>
+          </div>
+        </article>
+
+        <br />
+
+        <section>
+          <nav class="list-group">
+            <!-- 목록의 아이템 -->
+            <a href="uniUpdate" class="list-group-item"> 회원정보 수정 및 탈퇴 </a>
+            <a href="uniProducts" class="list-group-item"> 상품등록 </a>
+            <a href="uniDibs" class="list-group-item"> 찜 목록 </a>
+            <a href="uniPurchase" class="list-group-item"> 구매목록 </a>
+            <a href="uniSale" class="list-group-item"> 판매목록 </a>
+            <a href="uniAlarm" class="list-group-item"> 알림내역 </a>
+          </nav>
+        </section>
+      </main>
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer>
+    </footer>
+    <!-----------------end---------------------------->
+
+  </body>
+</html>

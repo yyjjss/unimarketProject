@@ -1,0 +1,166 @@
+{% extends 'uniBase.html' %} {% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- reset -->
+    <link rel="stylesheet" href="{% static '/setting/css/reset.css' %}" />
+    <!-- Bootstrap CSS -->
+    <link
+      href="{% static '/setting/css/bootstrap.min.css' %}"
+      rel="stylesheet"
+      media="screen"
+    />
+    <!-- font css -->
+    <script src="https://use.fontawesome.com/e3c0fc771e.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+      integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+      crossorigin="anonymous"
+    />
+    <!-- 반응형 웹 설정 -->
+    <link rel="stylesheet" href="{% static '/setting/css/ie10.css' %}" />
+    <script rel="stylesheet" href="{% static '/setting/js/ie10.js' %}"></script>
+    <!-- Default js -->
+    <script
+      type="text/javascript"
+      src="{% static '/setting/js/html5shiv.js' %}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{% static '/setting/js/respond.min.js' %}"
+    ></script>
+
+    <!-- style css -->
+    <link rel="stylesheet" href="{% static '/css/common.css' %}" />
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/review.css' %}" />
+    {% endblock %}
+    <!-- chat -->
+
+    <!-- Java script -->
+    <script src="{% static '/setting/js/jquery-3.6.0.min.js' %}"></script>
+    <script>
+      $.ajaxSetup({
+        headers: { "X-CSRFToken": "{{csrf_token}}" },
+      });
+    </script>
+    <script src="{%static '/js/base.js'%}"></script>
+    <title>{% block title %}Uni review{% endblock %}</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header>{% block header %} {% endblock %}</header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <main>
+        {% csrf_token %}
+        <h2>[{{ buymem.nickname }}]님,</h2>
+        <h2>[{{ sellmem.nickname }}]님과의 거래는 어떠셨나요?</h2>
+        <form
+          name="review"
+          method="post"
+          action="uniReview"
+          onsubmit="return reviewCk()"
+        >
+          {% csrf_token %}
+          <input id="ItemNo" name="ItemNo" value="{{itemNo}}" type="hidden" />
+          <div class="review">
+            <div class="review-box">
+              <input id="take-1" type="checkbox" name="review" value="1" />
+              <label for="take-1"> <span></span> 상품설명이 자세해요. </label>
+            </div>
+            <div class="review-box">
+              <input id="take-2" type="checkbox" name="review" value="2" />
+              <label for="take-2">
+                <span></span> 상품상태가 설명과 일치해요.
+              </label>
+            </div>
+            <div class="review-box">
+              <input id="take-3" type="checkbox" name="review" value="3" />
+              <label for="take-3">
+                <span></span> 좋은 상품을 저렴하게 판매해요.
+              </label>
+            </div>
+            <div class="review-box">
+              <input id="take-4" type="checkbox" name="review" value="4" />
+              <label for="take-4">
+                <span></span> 판매자가 친절해고 매너가 좋았어요.
+              </label>
+            </div>
+            <div class="review-box">
+              <input id="take-5" type="checkbox" name="review" value="5" />
+              <label for="take-5"> <span></span> 거래장소가 가까웠어요. </label>
+            </div>
+          </div>
+          <div class="review-select">
+            <input type="submit" value="전송" />
+            <input
+              class="btn btn-default"
+              type="button"
+              onclick="reviewClose()"
+              value="닫기"
+            />
+          </div>
+        </form>
+        <script type="text/javascript">
+          function reviewCk() {
+            const check = "input[name='review']:checked";
+            console.log("checkList: " + check);
+            var itemNo = $("#ItemNo").val();
+            var selectElements = document.querySelectorAll(check);
+            var list = new Array();
+            for (var i = 0; i < selectElements.length; i++) {
+              var str = selectElements[i].value;
+              console.log("str: " + str);
+              list.push(str);
+            }
+            console.log("list: " + list);
+            console.log("selectElements: " + selectElements);
+            const selectElementsCnt = selectElements.length;
+            let param = {
+              itemNo: itemNo,
+              selectElementsCnt: selectElementsCnt,
+              list: list,
+            };
+            if (check) {
+              document.review.submit();
+              $.ajax({
+                url: "{% url 'uniReview' %}",
+                type: "POST",
+                data: JSON.stringify(param),
+                contentType: "application/json; charset=UTF-8",
+                dataType: "json",
+                success: function () {
+                  window.opener.location.reload();
+                  window.close();
+                },
+              });
+            }
+          }
+
+          function reviewClose() {
+            window.close();
+          }
+        </script>
+      </main>
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer>{% block footer %} {% endblock %}</footer>
+    <!-----------------end---------------------------->
+
+    <!-- Bootstrap JS -->
+
+    <script src="{% static '/setting/js/bootstrap.min.js' %}"></script>
+  </body>
+</html>

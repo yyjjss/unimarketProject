@@ -1,0 +1,285 @@
+{% extends "uniBase.html" %} {% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+
+    <!-- style css -->
+    {% block css %}
+    <link rel="stylesheet" href="{% static '/css/register.css' %}" />
+    {% endblock %}
+
+    <!-- Java script -->
+    {% block script %}
+    <script src="{% static '/js/update.js' %}"></script>
+    {% endblock %}
+    <title>Uni Update</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header></header>
+    <!-------------- end ----------------->
+
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <div class="update">
+        <form
+          name="updateform"
+          method="post"
+          action="{% url 'uniUpdatepro'%}"
+          onsubmit="return updateck()"
+        >
+          {% csrf_token %}
+
+          <h1>회원정보수정</h1>
+          <br />
+          <div class="email_box">
+            <h3>
+              <label for="email">이메일</label>
+            </h3>
+            <input
+              readonly
+              type="text"
+              id="email"
+              name="email"
+              value="{{dto.email}}"
+              placeholder=""
+            />
+            <!-- <button disabled type="button" class="btn btn" onclick="dupChk()">중복확인</button> -->
+          </div>
+
+          <hr />
+
+          <div class="passwd_box">
+            <h3>
+              <label for="passwd"> 비밀번호 입력 </label>
+            </h3>
+            <input
+              type="password"
+              id="passwd"
+              name="passwd"
+              value=""
+              placeholder="문자,숫자,특수문자 조합의 8~24 자리"
+            />
+          </div>
+
+          <hr />
+
+          <div class="passwd1_box">
+            <h3>
+              <label for="passwd1">비밀번호 확인</label>
+            </h3>
+            <input
+              type="password"
+              id="passwd1"
+              name="passwd1"
+              value=""
+              placeholder="비밀번호 재입력"
+            />
+          </div>
+
+          <hr />
+
+          <div class="nickname_box">
+            <h3>
+              <label for="nickname">닉네임</label>
+            </h3>
+            <input
+              type="text"
+              id="nickname"
+              name="nickname"
+              value="{{dto.nickname}}"
+              placeholder="한글 또는 영문 "
+            />
+          </div>
+
+          <hr />
+
+          <div class="bDate_box">
+            <h3>
+              <label for="bDate">생년월일</label>
+            </h3>
+            <input readonly type="text" id="bDate" name="bDate"
+            onKeyup="checkBdate(this);" value="{{dto.bDate|date:"Y-m-d"}}"
+            placeholder=""/>
+          </div>
+
+          <hr />
+
+          <div class="gender">
+            <h3>
+              <label>성별</label>
+            </h3>
+            &nbsp;
+            <input
+              type="radio"
+              id="male"
+              name="gender"
+              value="1"
+              checked="checked"
+            />
+            <label for="male">남</label>
+            &nbsp;&nbsp;&nbsp;
+            <input type="radio" id="female" name="gender" value="2" />
+            <label for="female">여</label>
+          </div>
+
+          <hr />
+
+          <div class="marital-status">
+            <h3>
+              <label>결혼 여부</label>
+            </h3>
+            &nbsp;
+            <input
+              type="radio"
+              id="single"
+              name="marrStat"
+              value="1"
+              checked="checked"
+            />
+            <label for="single">미혼</label>
+            &nbsp;&nbsp;&nbsp;
+            <input type="radio" id="married" name="marrStat" value="2" />
+            <label for="married">기혼</label>
+          </div>
+
+          <hr />
+
+          <div class="icon-select">
+            <h3>
+              <label>프로필 아이콘</label>
+            </h3>
+            <div class="icon-img">
+              <input
+                type="radio"
+                name="proImg"
+                id="tab1"
+                width="10"
+                value="1"
+                checked="checked"
+              />
+              <img src="{% static '/images/고양.jpg' %}" alt="kdb" />
+              &nbsp;&nbsp;&nbsp;
+            </div>
+            <div class="icon-img">
+              <input
+                type="radio"
+                name="proImg"
+                id="tab2"
+                width="10"
+                value="2"
+              />
+              <img src="{% static '/images/로켓.jpg' %}" alt="fod" />
+              &nbsp;&nbsp;&nbsp;
+            </div>
+            <div class="icon-img">
+              <input
+                type="radio"
+                name="proImg"
+                id="tab3"
+                width="10"
+                value="3"
+              />
+              <img src="{% static '/images/행성1.jpg' %}" alt="can" />
+              &nbsp;&nbsp;&nbsp;
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="loc_fulltext">
+            <h3>
+              <label>우리동네</label>
+            </h3>
+            <input
+              type="text"
+              id="address_kakao"
+              name="location"
+              value="{{dto.loc}}"
+              placeholder="동네명"
+              readonly
+            />
+            <input
+              type="button"
+              class="btn btn"
+              id="address_daum"
+              name="loc"
+              value="동네찾기"
+              readonly
+            />
+            <input
+              type="hidden"
+              id="zonecode"
+              name="zonecode"
+              value="{{dto.zonecode}}"
+              type="text"
+              placeholder="우편번호"
+            />
+            <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+            <script>
+              window.onload = function () {
+                document
+                  .getElementById("address_daum")
+                  .addEventListener("click", function () {
+                    new daum.Postcode({
+                      oncomplete: function (data) {
+                        var sido = data.sido;
+                        var sigungu = data.sigungu;
+                        var bname = data.bname;
+                        var address = sido + " " + sigungu + " " + bname;
+                        document.getElementById("address_kakao").value =
+                          address;
+                        document.getElementById("zonecode").value =
+                          data.zonecode;
+                      },
+                    }).open();
+                  });
+              };
+            </script>
+          </div>
+
+          <hr />
+
+          <div class="complete btn-group btn-group-justified">
+            <input
+              class="inputbutton btn btn-default"
+              type="submit"
+              value="수정완료"
+            />
+            <input
+              class="inputbutton btn btn-default"
+              type="reset"
+              value="수정취소"
+            />
+            <input
+              class="inputbutton btn btn-default"
+              type="button"
+              value="회원탈퇴"
+              onclick="uniMemDel()"
+            />
+          </div>
+        </form>
+      </div>
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer></footer>
+    <!-----------------end---------------------------->
+
+    <!-- Bootstrap JS -->
+    {% block script2 %}
+    <script>
+      function uniMemDel() {
+        location.href = "uniUpdate?delck=1";
+      }
+    </script>
+    {% endblock %}
+  </body>
+</html>

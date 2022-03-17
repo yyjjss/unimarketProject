@@ -1,0 +1,554 @@
+
+<---- views.py--->
+
+from datetime import datetime, timezone, timedelta
+from decimal import Decimal
+import json
+import logging
+
+from IPython.core import logger
+from django.db.models.aggregates import Avg
+from django.http.response import HttpResponse, JsonResponse
+from django.shortcuts import render, redirect
+from django.template import loader
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.base import TemplateView
+
+from unimarket.models import Item, Category, Like, Satisfaction, Report, Member
+
+
+logger = logging.getLogger(__name__)
+
+class LoginView(TemplateView):
+    def get(self, request):
+        template = loader.get_template("uniLogin.html")
+        context={}
+        return HttpResponse(template.render(context, request))
+    def post(self, request):
+        pass
+    
+class CategoryView(TemplateView):
+    @csrf_exempt
+    def get(self, request):
+        dtos = Item.objects.all().order_by('-uDate')
+        template = loader.get_template("uniCategory.html") 
+        keyword_condition = request.GET.get("kwrd")
+        cate_condition = request.GET.get("cat")
+        order_condition = request.GET.get("order")
+        
+        PAGE_SIZE = 4
+        PAGE_BLOCK = 10
+        
+        page = request.GET.get("page")
+        if not page :
+            page = "1"
+        page = int( page )
+        
+        start = (page - 1) * int( PAGE_SIZE )
+        end = start + int(PAGE_SIZE)
+
+        count = 0
+        if cate_condition == "None":
+            dtos = dtos
+            logger.info("카테1: none : "+str(dtos))
+            count = dtos.count()
+            if end > count : 
+                end = count
+        elif not cate_condition:
+            dtos = dtos
+            count = dtos.count()
+            if end > count : 
+                end = count
+        else:
+            dtos = dtos.filter(catNo=cate_condition)
+            logger.info("카테: "+str(dtos))
+            count = dtos.count()
+            if end > count : 
+                end = count
+
+        if keyword_condition == "None":
+            dtos = dtos
+            logger.info("키워드: none : "+str(dtos))
+        elif not keyword_condition:
+            dtos = dtos
+        else:
+            dtos = dtos.filter(title__contains=keyword_condition)
+            logger.info("키워드: "+str(dtos))
+
+        if order_condition == "None":
+            dtos = dtos[start:end]
+        elif not order_condition:
+            dtos = dtos[start:end]
+        else:
+            dtos = dtos.order_by(order_condition)[start:end]
+        
+        number = count - (page - 1 ) * int( PAGE_SIZE )
+        
+        startpage = page // PAGE_BLOCK * PAGE_BLOCK + 1
+        if page % PAGE_BLOCK == 0 :
+            startpage -= PAGE_BLOCK
+            
+        endpage = startpage + PAGE_BLOCK - 1
+        pagecount = (count // PAGE_SIZE)
+        if count % PAGE_SIZE > 0 :
+            pagecount += 1
+        if endpage > pagecount :
+            endpage = pagecount
+        pages = range( startpage, endpage + 1)
+        
+        context={
+            "cate_condition" : cate_condition,  
+            "order_condition" : order_condition,
+            "keyword_condition": keyword_condition, 
+            "count" : count,
+            "dtos" : dtos,
+            "page" : page,
+            "number" : number,
+            "pages" : pages,
+            "pageblock" : PAGE_BLOCK,
+            "pagecount" : pagecount,
+            "startpage" : startpage,
+            "endpage" : endpage,
+            }
+        return HttpResponse(template.render(context, request))
+    def post(self, request):
+        pass
+    
+class ChatView(TemplateView):
+    def get(self, request):
+        template = loader.get_template("uniChat.html")
+        context={}
+        return HttpResponse(template.render(context, request))
+    def post(self, request):
+        pass
+    
+class ProductsView(TemplateView):
+    def get(self, request):
+        template = loader.get_template("uniProducts.html")
+        context={}
+        return HttpResponse(template.render(context, request))
+    def post(self, request):
+        pass
+    
+class ConfirmView(TemplateView):
+    def get(self, request):
+        template = loader.get_template("uniConfirm.html")
+        context={}
+        return HttpResponse(template.render(context, request))
+    def post(self, request):
+        pass
+    
+class CongratsView(TemplateView):
+    def get(self, request):
+        template = loader.get_template("uniCongrats.html")
+        context={}
+        return HttpResponse(template.render(context, request))
+    def post(self, request):
+        pass
+
+# 상품상세 페이지    
+class DetailView(TemplateView):
+    def get(self, request):
+        template = loader.get_template("uniDetail.html")
+        #memNo = request.session.get("memNo", -1)
+        memNo = 2
+        logger.info("memNo : "+str(memNo))
+        if memNo == -1 :
+            itemNo = request.GET["itemNo"]
+            dto = Item.objects.get(itemNo=itemNo)
+            dto.readCnt += 1
+            dto.save()
+            # 카테고리 이름
+            dtoCat = Category.objects.get(catNo=dto.catNo)
+            # 추천 상품일 경우 
+            recommend = request.GET.get("recmd", '0')
+            # 추천상품 리스트(8개)
+            dtoRecmd = Item.objects.exclude(itemNo=dto.itemNo).filter(catNo=dto.catNo).order_by("-readCnt","-uDate")[0:8]
+            # 등록일 수정 
+            registerDate = reDateType(dto.uDate) 
+            # 해당 상품을 찜하였는지 확인
+            likeck = -1
+            # 해당 상품을 신고했는지 확인(이중신고방지)
+            reportck = -1
+        else :
+            #memNo = 2
+            itemNo = request.GET["itemNo"]
+            dto = Item.objects.get(itemNo=itemNo)
+            dto.readCnt += 1
+            dto.save()
+            # 카테고리 이름 
+            dtoCat = Category.objects.get(catNo=dto.catNo)
+            # logger.info("CatName : "+str(dtoCat.catName))
+            # 추천 상품일 경우 
+            recommend = request.GET.get("recmd", '0')
+            # 추천상품 리스트(8개)
+            #zonecode = substr(dto.zonecode, 1, 3)
+            zonecode = dto.zonecode[0:3] #우편번호 앞에 3자리 자르기
+            #logger.info("zonecode : "+str(zonecode))
+            dtoRecmd = Item.objects.exclude(itemNo=dto.itemNo).filter(catNo=dto.catNo, zonecode__startswith=zonecode).order_by("-readCnt","-uDate")[0:8]
+            # 등록일 수정 
+            registerDate = reDateType(dto.uDate)
+            # 해당 상품을 찜하였는지 확인
+            likeck = Like.objects.filter(memNo=memNo, itemNo=itemNo).count()
+            # 해당 상품을 신고했는지 확인(이중신고방지)
+            reportck = Report.objects.filter(reportFrom=memNo, itemNo=itemNo).count()
+        
+        context={
+                "dto" : dto,
+                "registerDate" : registerDate,
+                "catName" : dtoCat.catName,
+                "dtoRecmd" : dtoRecmd,
+                "recommend" : recommend,
+                "likeck" : likeck,
+                "memNo" : memNo,
+                "reportck" : reportck, 
+                "zonecode" : zonecode,
+            }   
+        return HttpResponse(template.render(context, request))
+    def post(self, request):
+        pass
+    
+# 추천상품 만족도 조사 테이블 업데이트 
+class UpdateRecentreviewView(TemplateView):
+    @csrf_exempt
+    def get(self, request):
+        pass
+    def post(self, request):
+        template = loader.get_template("uniChat.html")
+        # memNo = request.session.get("memNo")
+        memNo = 2
+        rideoBtn = request.POST["recentreview"]
+        itemNo = request.POST["recentItemNo"]
+        # Satisfaction update
+        dto = Satisfaction(
+                memNo = memNo,
+                itemNo = request.POST["recentItemNo"],
+                satisfactionScore = rideoBtn
+            )
+        dto.save()
+        # 만족도 평균 구하고 Item update
+        satAvg = Satisfaction.objects.all().aggregate(Avg('satisfactionScore'))
+        dtoItem = Item.objects.get(itemNo=itemNo)
+        dtoItem.SatisfactionAvg = satAvg['satisfactionScore__avg']
+        dtoItem.save()
+        context={}
+        return HttpResponse(template.render(context, request))
+
+# 찜 테이블 / 상품 찜수 update
+class UpdateLikeView(TemplateView):
+    def get(self, request):
+        pass
+    def post(self, request):
+        template = loader.get_template("uniDetail.html")
+        #memNo = request.session.get("memNo")
+        memNo = 2
+        itemNo = request.POST["itemNo"]
+        count = Like.objects.filter(memNo=memNo, itemNo=itemNo).count()
+        if count == 0 :
+            dto = Like(
+                memNo = memNo,
+                itemNo = request.POST["itemNo"],
+                price = request.POST["price"]
+            )
+            dto.save()
+            dtoItem = Item.objects.get(itemNo=itemNo)
+            dtoItem.likeCnt += 1
+            dtoItem.save()
+        else :
+            dto = Like.objects.filter(memNo=memNo, itemNo=itemNo)
+            dto.delete()
+            dtoItem = Item.objects.get(itemNo=itemNo)
+            dtoItem.likeCnt -= 1
+            dtoItem.save()
+        return HttpResponse(dtoItem.likeCnt)
+
+# 상품등록자 고유값이기 때문에 따로 보안을 위함
+# class LoadReportView(TemplateView):
+    # def get(self, request):
+        # template = loader.get_template("uniReport.html")
+        # context={}
+        # return HttpResponse(template.render(context, request))
+    # def post(self, request):
+        # # template = loader.get_template("uniReport.html")
+        # sellMemNo = request.POST["sellMemNo"]
+        # # logger.info("sellMemNo : "+str(sellMemNo))
+        # buyMemNo = request.POST["buyMemNo"]
+        # context={
+            # "sellMemNo" : sellMemNo,
+            # "buyMemNo" : buyMemNo,
+        # }
+        # return HttpResponse(json.dumps(context), content_type="application/json")
+    
+# 신고 테이블 / 멤버 신고받은수 update
+class UpdateReportView(TemplateView):
+    @csrf_exempt
+    def get(self, request):
+        pass
+    def post(self, request):
+        # memNo = request.session.get("memNo")
+        memNo = 2
+        reportTo = request.POST["reportTo"]
+        reportFrom = request.POST["reportFrom"]
+        reportContent = request.POST["reportContent"]
+        itemNo = request.POST["itemNo"]
+        result = ""
+        count = Report.objects.filter(reportTo=memNo, itemNo=itemNo).count()
+        if count == 0 :
+            dto = Report(
+                reportFrom = reportFrom,
+                reportTo = reportTo,
+                reportContent = reportContent,
+                itemNo = itemNo,
+            )
+            dto.save()
+            dtoMember = Member.objects.get(memNo=reportTo)
+            dtoMember.report = 1
+            dtoMember.reportCnt += 1
+            dtoMember.save()
+            result = "yes"
+        else :
+            result = "no"
+        return HttpResponse(result)
+        # logger.info("context : "+str(context["itemNo"]))
+        return HttpResponse("success")
+    
+# 상품상세페이지의 판매자 정보 이동
+class SellerView(TemplateView):
+    @csrf_exempt
+    def get(self, request):
+        # 판매자 memNo 보안을 위해 itemNo만 받아 서 진행
+        template = loader.get_template("uniSeller.html")
+        itemNo = request.GET["itemNo"]
+        # 아이템 테이블에서 해당 아이템의 판매자 memNo 추출
+        seller = Item.objects.filter(itemNo=itemNo).values("memNo")
+        #logger.info("seller : "+str(seller[0]["memNo"]))
+        dtoItem = Item.objects.filter(memNo=seller[0]["memNo"]).order_by('-uDate')
+        dtoMember = Member.objects.get(memNo=seller[0]["memNo"])
+        
+        pageNum = request.GET.get("pageNum", 1)
+        context = pageList(pageNum, seller[0]["memNo"], "get")
+        context["dtoMember"] = dtoMember
+        logger.info("context222 : "+str(context))
+        return HttpResponse(template.render(context, request))
+    
+    def post(self, request):
+        #template = loader.get_template("uniSeller.html")
+        jsonObj = json.loads(request.body)
+        pageNum = jsonObj.get("pageNum")
+        seller = jsonObj.get("sellMemNo")
+        logger.info("pasgeNum : "+str(pageNum))
+        
+        # pageNum = request.POST["pageNum"]
+        # seller = request.POST["sellMemNo"]
+        
+        # seller = json.loads(request.sellMemNo)
+        context = pageList(pageNum, seller, "post")
+        # for a in range(0, len(context["dtoItem"])):
+            # context["dtoItem"][a].uDate
+            # logger.info("contextUD : "+str(list(context["dtoItem"].values())))
+            #context["dtoItem"][a].uDate = context["dtoItem"][a].uDate.strftime('%Y-%m-%d')
+            #logger.info("uDate : "+str(context["dtoItem"][a].uDate))
+            #context["dtoItem"][a]["uDate"] = context["dtoItem"][a]["uDate"].strftime('%Y-%m-%d')
+        #context["dtoItem"]["uDate"] = context["dtoItem"]["uDate"][0].strftime('%Y-%m-%d')
+        #logger.info("contextPost : "+str(list(context["dtoItem"].values())))
+        #logger.info("contextPost111 : "+str(context["dtoItem"]))
+        context["dtoItem"] = list(context["dtoItem"].values("itemNo","itemImg","title","sellStat","price"))
+        logger.info("contextPost : "+str(context))
+        
+        return HttpResponse(json.dumps(context), content_type="application/json")
+        #return JsonResponse(context, safe=False)
+    
+# 마이페이지 이동
+class MypageView(TemplateView):
+    def get(self, request):
+        template = loader.get_template("uniMypage.html")
+        #memNo = request.session.get("memNo")
+        memNo = 2
+        dtoMember = Member.objects.get(memNo=memNo)
+        context={
+            "dtoMember" : dtoMember,
+            }
+        return HttpResponse(template.render(context, request))
+    def post(self, request):
+        pass
+        
+    
+class DibsView(TemplateView):
+    def get(self, request):
+        template = loader.get_template("uniDibs.html")
+        context={}
+        return HttpResponse(template.render(context, request))
+    def post(self, request):
+        pass
+    
+class PurchaseView(TemplateView):
+    def get(self, request):
+        template = loader.get_template("uniPurchase.html")
+        context={}
+        return HttpResponse(template.render(context, request))
+    def post(self, request):
+        pass
+    
+class RegisterView(TemplateView):
+    def get(self, request):
+        template = loader.get_template("uniRegister.html")
+        context={}
+        return HttpResponse(template.render(context, request))
+    def post(self, request):
+        pass
+    
+class SaleView(TemplateView):
+    def get(self, request):
+        template = loader.get_template("uniSale.html")
+        context={}
+        return HttpResponse(template.render(context, request))
+    def post(self, request):
+        pass
+    
+class UpdateView(TemplateView):
+    def get(self, request):
+        template = loader.get_template("uniUpdate.html")
+        context={}
+        return HttpResponse(template.render(context, request))
+    def post(self, request):
+        pass
+    
+# 등록일 몇분전 몇일전 표시 함수
+def reDateType(uDate):
+    reTime = datetime.now(tz=timezone.utc) - uDate
+    # 1분을 넘기지않을 경우 
+    if reTime < timedelta(minutes=1):
+        return "방금 전"
+    # 1시간을 넘기지않을 경우
+    elif reTime < timedelta(hours=1):
+        return str(int(reTime.seconds / 60)) + "분 전"
+    # 하루(1일)를 넘기지않을 경우
+    elif reTime < timedelta(days=1):
+        return str(int(reTime.seconds / 3600)) + "시간 전"
+    # 일주일(7일)을 넘기지않을 경우
+    elif reTime < timedelta(days=7):
+        time = datetime.now(tz=timezone.utc).date() - uDate.date()
+        return str(time.days) + "일 전"
+    else:
+        return False
+    
+def pageList(pageNum, seller, stat):
+    PAGE_SIZE = 2
+    PAGE_BLOCK = 2
+    
+    # 페이지 번호 
+    pageNum = int( pageNum )
+    # 상품 판매자 번호를 받아 상품테이블에서 판매자 등록 상품 데이터 추출
+    sellMemNo = seller
+    dtos = Item.objects.filter(memNo=sellMemNo).order_by('-uDate')
+    
+    # 데이터 추출 인덱스범위 설정[start:end]
+    start = (pageNum - 1) * int( PAGE_SIZE )
+    end = start + int(PAGE_SIZE)
+    count = dtos.count()
+    if end > count : 
+        end = count
+    dtoItem=""
+    # 추출한 인덱스 범위(page 번호기준)에 따른 상품목록 추출 
+    if stat == "get" :
+        dtoItem = dtos[start:end]
+    else :
+        dtoItem = dtos[start:end].values("itemNo","itemImg","title","sellStat","price") 
+        logger.info("함수dtoItem : "+str(dtoItem))       
+    
+    startpage = pageNum // PAGE_BLOCK * PAGE_BLOCK + 1
+    if pageNum % PAGE_BLOCK == 0 :
+        startpage -= PAGE_BLOCK
+        
+    endpage = startpage + PAGE_BLOCK - 1
+    pagecount = (count // PAGE_SIZE)
+    if count % PAGE_SIZE > 0 :
+        pagecount += 1
+    if endpage > pagecount :
+        endpage = pagecount
+    pages = list(range(startpage, endpage + 1))
+    context={
+        "count" : count,
+        "dtoItem" : dtoItem,
+        "pageNum" : pageNum,
+        "pages" : pages,
+        "pageblock" : PAGE_BLOCK,
+        "pagecount" : pagecount,
+        "startpage" : startpage,
+        "endpage" : endpage,
+        }
+    
+    return context
+    
+    
+ <-- seller.js -->
+ 왼쪽 버튼 누르면 전페이지로 넘어가는 ajax
+ 
+ function prevpage() {
+	  let pageNum = Number($("#pageNum").val())-1;
+	  alert(pageNum);
+	  let param= {
+			  "pageNum" : pageNum,
+			  "sellMemNo" : $("#sellMemNo").val(),
+			  }
+	  $.ajax(
+			  {
+				  url : "uniSeller",
+				  type : "POST",
+				  data : JSON.stringify(param),
+				  dataType : "json",
+					success : function(data){
+						var result = ' ';
+						var result2 = ' ';
+						console.log(data);
+						result +='<nav class="list-group">'
+						console.log(data.count);
+						// 판매내역 리스트
+						$.each(data["dtoItem"], function(index, sellList){
+							console.log(sellList["itemNo"]);
+							result += '<a href="uniDetail?itemNo='+sellList["itemNo"]+'" class="list-group-item">'
+							result += '<div class="seller-image-box">'
+							result += '<div class="seller-img"><img src="/media/'+sellList["itemImg"]+'" alt="상품이미지" /></div>'
+							//console.log(sellList["itemImg"]);
+							result += '</div>'
+							result += '<div class="seller-value">'
+							result += '<h4>'+sellList["title"]
+							if (sellList["sellStat"] == 0){
+								result += '<span class="badge">판매중</span>' 
+							} else{
+								result += '<span class="badge">판매완료</span>' 
+							}
+							result += '</h4>'
+							result += sellList["price"]+'<span>원</span>'
+							result += '</div>'
+							result += '</a>'
+						})
+						result +='</nav>'
+						$("#navFor").html(result)
+						
+						// 페이지 번호
+						result2 += '<div id="pageFor" style="text-align: center; padding:3%">'
+						result2 += '<input id="pageNum" type="hidden" value="'+pageNum+'">'
+						if(data["startpage"] > 1){
+							result2 += '<a href="javascript:void(0);">...</a> '
+						}
+						$.each(data["pages"], function(index, page){
+							if(page == data["pageNum"]){
+								result2 += '<span><b>['+page+']</b></span> '
+							}else{
+								result2 += '<a href="javascript:void(0);">'+page+'</a> '
+							}
+						})
+						if(data["endpage"] < data["pagecount"]){
+							result2 += '<a href="javascript:void(0);">...</a>'
+						}
+						result2 += '</div>'
+						$("#pageFor").html(result2)	
+					},
+					error : function(request, status, error){
+						//console.log("code = "+ request.status + " error = " + error); // 실패 시 처리
+						//console.log("error")
+					}
+				}
+			);
+}

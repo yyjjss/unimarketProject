@@ -1,0 +1,394 @@
+{% extends "uniBase.html" %} {% load static%}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- reset -->
+    <link rel="stylesheet" href="{%static '/setting/css/reset.css'%}" />
+    <!-- Bootstrap CSS -->
+    <link
+      href="{%static '/setting/css/bootstrap.min.css'%}"
+      rel="stylesheet"
+      media="screen"
+    />
+    <!-- font css -->
+    <script src="https://use.fontawesome.com/e3c0fc771e.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css'%}"
+      integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+      crossorigin="anonymous"
+    />
+
+    <!-- 반응형 웹 설정 -->
+    <link rel="stylesheet" href="{%static '/setting/css/ie10.css'%}" />
+    <script rel="stylesheet" href="{%static '/setting/js/ie10.js'%}"></script>
+    <!-- Default js -->
+    <script
+      type="text/javascript"
+      src="{%static '/setting/js/html5shiv.js'%}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{%static '/setting/js/respond.min.js'%}"
+    ></script>
+
+    <!-- style css -->
+    {% block css %}
+    <link rel="stylesheet" href="{%static '/css/products.css'%}" />
+    {% endblock %}
+    <!-- Java script -->
+    <script src="{%static '/setting/js/jquery-3.6.0.min.js'%}"></script>
+    <script>
+      $.ajaxSetup({
+        headers: { "X-CSRFToken": "{{csrf_token}}" },
+      });
+    </script>
+    <script src="{%static '/js/base.js'%}"></script>
+    <script src="{%static '/js/products.js'%}"></script>
+    <title>{% block title %}Uni products {% endblock %}</title>
+  </head>
+  <body>
+    <!------------------헤더-------------------------->
+    <header></header>
+    <!------------------end--------------------------->
+    <div class="container">
+      {% block container %}
+      <article>
+        <h1>상품수정</h1>
+        <form
+          class="products"
+          action="{% url 'uniProductsedit' %}"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          {% csrf_token %}
+          <input type="hidden" name="itemNo" value="{{dto.itemNo}}" />
+          <div class="pro_head">
+            <div class="pro_image_home">
+              <div class="pro_image_group">
+                <div id="img_container">
+                  <img id="preview" src="{{ dto.itemImg.url }}" />
+                  <strong>이미지 미리보기</strong>
+                </div>
+                <br />
+                <input
+                  type="file"
+                  name="itemImg"
+                  accept="image/*"
+                  id="input_img"
+                />
+              </div>
+            </div>
+            <br />
+            <div class="form-group">
+              <label class="control-label" for="pro_title">
+                <h4><legend>제목</legend></h4>
+              </label>
+              <input
+                type="text"
+                name="title"
+                class="form-control"
+                id="pro_title"
+                value="{{dto.title}}"
+              />
+            </div>
+          </div>
+          <div class="pro_category">
+            <div class="pro_check">
+              <legend>카테고리</legend>
+              <div class="btn-group">
+                {% if dto.catNo == "cat01" %}
+                <input
+                  id="cate_1"
+                  type="radio"
+                  name="category"
+                  value="cat01"
+                  checked="checked"
+                />
+                {% else %}
+                <input id="cate_1" type="radio" name="category" value="cat01" />
+                {% endif %}
+                <label for="cate_1" class="btn btn-default"> 디지털기기 </label>
+
+                {% if dto.catNo == "cat02" %}
+                <input
+                  id="cate_2"
+                  type="radio"
+                  name="category"
+                  value="cat02"
+                  checked="checked"
+                />
+                {% else %}
+                <input id="cate_2" type="radio" name="category" value="cat02" />
+                {% endif %}
+                <label for="cate_2" class="btn btn-default"> 생활가전 </label>
+
+                {% if dto.catNo == "cat03" %}
+                <input
+                  id="cate_3"
+                  type="radio"
+                  name="category"
+                  value="cat03"
+                  checked="checked"
+                />
+                {% else %}
+                <input id="cate_3" type="radio" name="category" value="cat03" />
+                {% endif %}
+                <label for="cate_3" class="btn btn-default">
+                  가구/인테리어
+                </label>
+
+                {% if dto.catNo == "cat04" %}
+                <input
+                  id="cate_4"
+                  type="radio"
+                  name="category"
+                  value="cat04"
+                  checked="checked"
+                />
+                {% else %}
+                <input id="cate_4" type="radio" name="category" value="cat04" />
+                {% endif %}
+                <label for="cate_4" class="btn btn-default">
+                  생활/가공식품
+                </label>
+
+                {% if dto.catNo == "cat05" %}
+                <input
+                  id="cate_5"
+                  type="radio"
+                  name="category"
+                  value="cat05"
+                  checked="checked"
+                />
+                {% else %}
+                <input id="cate_5" type="radio" name="category" value="cat05" />
+                {% endif %}
+                <label for="cate_5" class="btn btn-default">
+                  여성패션/잡화
+                </label>
+
+                {% if dto.catNo == "cat06" %}
+                <input
+                  id="cate_6"
+                  type="radio"
+                  name="category"
+                  value="cat06"
+                  checked="checked"
+                />
+                {% else %}
+                <input id="cate_6" type="radio" name="category" value="cat06" />
+                {% endif %}
+                <label for="cate_6" class="btn btn-default">
+                  남성패션/잡화
+                </label>
+
+                {% if dto.catNo == "cat07" %}
+                <input
+                  id="cate_7"
+                  type="radio"
+                  name="category"
+                  value="cat07"
+                  checked="checked"
+                />
+                {% else %}
+                <input id="cate_7" type="radio" name="category" value="cat07" />
+                {% endif %}
+                <label for="cate_7" class="btn btn-default"> 유아동 </label>
+
+                {% if dto.catNo == "cat08" %}
+                <input
+                  id="cate_8"
+                  type="radio"
+                  name="category"
+                  value="cat08"
+                  checked="checked"
+                />
+                {% else %}
+                <input id="cate_8" type="radio" name="category" value="cat08" />
+                {% endif %}
+                <label for="cate_8" class="btn btn-default">
+                  스포츠/레저
+                </label>
+
+                {% if dto.catNo == "cat09" %}
+                <input
+                  id="cate_9"
+                  type="radio"
+                  name="category"
+                  value="cat09"
+                  checked="checked"
+                />
+                {% else %}
+                <input id="cate_9" type="radio" name="category" value="cat09" />
+                {% endif %}
+                <label for="cate_9" class="btn btn-default"> 게임/취미 </label>
+
+                {% if dto.catNo == "cat10" %}
+                <input
+                  id="cate_10"
+                  type="radio"
+                  name="category"
+                  value="cat10"
+                  checked="checked"
+                />
+                {% else %}
+                <input
+                  id="cate_10"
+                  type="radio"
+                  name="category"
+                  value="cat10"
+                />
+                {% endif %}
+                <label for="cate_10" class="btn btn-default">
+                  도서/티켓/음반
+                </label>
+
+                {% if dto.catNo == "cat11" %}
+                <input
+                  id="cate_11"
+                  type="radio"
+                  name="category"
+                  value="cat11"
+                  checked="checked"
+                />
+                {% else %}
+                <input
+                  id="cate_11"
+                  type="radio"
+                  name="category"
+                  value="cat11"
+                />
+                {% endif %}
+                <label for="cate_11" class="btn btn-default"> 반려동물 </label>
+
+                {% if dto.catNo == "cat12" %}
+                <input
+                  id="cate_12"
+                  type="radio"
+                  name="category"
+                  value="cat12"
+                  checked="checked"
+                />
+                {% else %}
+                <input
+                  id="cate_12"
+                  type="radio"
+                  name="category"
+                  value="cat12"
+                />
+                {% endif %}
+                <label for="cate_12" class="btn btn-default"> 식물 </label>
+
+                {% if dto.catNo == "cat13" %}
+                <input
+                  id="cate_13"
+                  type="radio"
+                  name="category"
+                  value="cat13"
+                  checked="checked"
+                />
+                {% else %}
+                <input
+                  id="cate_13"
+                  type="radio"
+                  name="category"
+                  value="cat13"
+                />
+                {% endif %}
+                <label for="cate_13" class="btn btn-default"> 뷰티/미용 </label>
+
+                {% if dto.catNo == "cat14" %}
+                <input
+                  id="cate_14"
+                  type="radio"
+                  name="category"
+                  value="cat14"
+                  checked="checked"
+                />
+                {% else %}
+                <input
+                  id="cate_14"
+                  type="radio"
+                  name="category"
+                  value="cat14"
+                />
+                {% endif %}
+                <label for="cate_14" class="btn btn-default"> 기타 </label>
+              </div>
+            </div>
+          </div>
+
+          <br />
+
+          <div class="pro_article">
+            <div class="form-group">
+              <label class="control-label" for="pro_value">
+                <h4><legend>가격</legend></h4>
+              </label>
+              <input
+                type="number"
+                name="price"
+                class="form-control"
+                id="pro_value"
+                value="{{dto.price}}"
+              />
+            </div>
+            <div class="form-group">
+              <label class="control-label" for="pro_explain">
+                <h4><legend>상품설명</legend></h4>
+              </label>
+              <p>
+                <textarea
+                  class="form-control"
+                  name="info"
+                  id="pro_explain"
+                  cols="5"
+                  rows="10"
+                >
+ {{dto.info}} </textarea
+                >
+              </p>
+            </div>
+          </div>
+          <div class="pro_select">
+            <button type="submit" class="btn btn-primary">
+              <span>상품수정</span>
+            </button>
+            <button
+              type="button"
+              class="btn btn-default"
+              onclick="location.href='uniSale'"
+            >
+              <span>수정취소</span>
+            </button>
+            <button
+              type="button"
+              style="float: right"
+              class="btn btn-danger"
+              onclick="location.href='uniDelete?itemNo={{dto.itemNo}}'"
+            >
+              <span>삭제하기</span>
+            </button>
+          </div>
+        </form>
+      </article>
+      {% endblock %}
+    </div>
+    <!---------------- 푸터 -------------------------->
+    <footer></footer>
+    <!-----------------end---------------------------->
+
+    <!-- Bootstrap JS -->
+
+    <script src="{%static '/setting/js/bootstrap.min.js'%}"></script>
+  </body>
+</html>
